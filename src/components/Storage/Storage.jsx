@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./Storage.scss";
 
 const Storage = (props) => {
-    const [qty, setQty] = useState(0);
+    const [qty, setQty] = useState('');
 
     function findGoodById(itemId) {
         return props.goods.find((item) => {
@@ -14,8 +14,8 @@ const Storage = (props) => {
         if (props.storage.length < 8) {
             return Array(8 - props.storage.length)
                 .fill()
-                .map((el) => {
-                    return <li className="good-item no-item" /* key={el.id} */></li>;
+                .map(() => {
+                    return <li className="good-item no-item" /* key={"empty-cell-" + (props.storage.length++)} */></li>;
                 });
         }
     }
@@ -28,7 +28,7 @@ const Storage = (props) => {
                     {props.storage.map((item) => {
                         return (
                             <li 
-                                key={item.id} 
+                                key={"storage-item-" + item.id} 
                                 className={
                                     "good-item item-" + 
                                     item.id + 
@@ -51,8 +51,9 @@ const Storage = (props) => {
                             <input 
                                 type="text" 
                                 className="input" 
+                                maxLength={3}
                                 value={qty}
-                                onChange={(e) => setQty(parseInt(e.target.value, 10))} 
+                                onChange={(e) => setQty(parseInt(e.target.value, 10) || '')} 
                             /> шт.
                             <button className="button"
                                 onClick={() => props.onSell(props.selectedGood, qty)}
