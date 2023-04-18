@@ -62,6 +62,10 @@ const Game = () => {
                 },
             ],
         },
+        {
+            cityId: 3,
+            storage: [],
+        },
     ]);
 
     const [cityStorages, setCityStorages] = useState([
@@ -155,6 +159,9 @@ const Game = () => {
         },
     ];
 
+    const [transportOrders, setTransportOrders] = useState([]);
+    const [orderId, setOrderId] = useState(1);
+
     function getStorageByCity() {
         const store = storages.find((storage) => {
             return storage.cityId === currentCity;
@@ -195,16 +202,21 @@ const Game = () => {
             if (goodIndex > -1) {
                 const currentCityStorage = getCityStorageByCity();
 
-                const goodIndex = currentCityStorage.findIndex((good) => {
+                const cityGoodIndex = currentCityStorage.findIndex((good) => {
                     return good.id === goodId;
                 });
 
-                if (goodIndex > -1) {
-                    const price = currentCityStorage[goodIndex].priceStats[currentCityStorage[goodIndex].priceStats.length - 1];
+                if (cityGoodIndex > -1) {
+                    const price = currentCityStorage[cityGoodIndex].priceStats[currentCityStorage[cityGoodIndex].priceStats.length - 1];
 
                     if (storagesNew[index].storage[goodIndex].qty >= qty) {
                         storagesNew[index].storage[goodIndex].qty -= qty;
                         moneyNew += qty * price;
+
+                        if (storagesNew[index].storage[goodIndex].qty === 0) {
+                            removeProduct(storagesNew[index].storage[goodIndex].id);
+                        }
+
                         setMoney(moneyNew);    
                     }
                 }
@@ -221,11 +233,7 @@ const Game = () => {
     function updateCityStorages() {
         let newCityStorages = cityStorages;
 
-        for (
-            let cityIndex = 0;
-            cityIndex < newCityStorages.length;
-            cityIndex++
-        ) {
+        for (let cityIndex = 0; cityIndex < newCityStorages.length; cityIndex++) {
             const storage = newCityStorages[cityIndex].storage;
 
             for (let goodIndex = 0; goodIndex < storage.length; goodIndex++) {
@@ -257,9 +265,24 @@ const Game = () => {
         setCityStorages(newCityStorages);
     }
 
+    function updateTransportOrders() {
+        setTransportOrders((oldTransportOrders) => {
+            const newOrders = [...oldTransportOrders];
+
+            newOrders.forEach((order, index) => {
+                if (order.days >=1) {
+                    order.days -= 1;
+                } 
+            })
+
+            return newOrders;
+        })
+    }
+
     function liveProcess() {
         setInterval(() => {
             updateCityStorages();
+            updateTransportOrders();
             setDays((days) => days + 1);
         }, 5000);
     }
@@ -276,6 +299,49 @@ const Game = () => {
         } else {
             return [];
         }
+    }
+
+    function createTransportOrder(targetCityId) {
+        const newOrders = [...transportOrders];
+
+        const storage = getStorageByCity();
+
+        const goodIndex = storage.findIndex(good => good.id == selectedGood)
+
+        if (goodIndex > -1) {
+            newOrders.push({
+                id: orderId,
+                fromCityId: currentCity,
+                targetCityId,
+                goodId: selectedGood,
+                qty: storage[goodIndex].qty,
+                days: 1
+            });
+
+            setOrderId(orderId + 1);
+            removeProduct(selectedGood);
+            setTransportOrders(newOrders);
+        }
+    }   
+
+    function removeProduct(productId) {
+        const storagesNew = storages;
+
+        const index = storagesNew.findIndex((storage) => {
+            return storage.cityId === currentCity;
+        });
+
+        if (index > -1) {
+            const productIndex = storagesNew[index].storage.findIndex((product) => {
+                return product.id === productId;
+            });
+
+            if (productIndex > -1) {
+                    storagesNew[index].storage.splice(productIndex, 1);
+                }
+            }
+
+        setStorages(storagesNew);
     }
 
     function buyGoods(goodId, qty, price) {
@@ -311,12 +377,54 @@ const Game = () => {
             setStorages(storagesNew);
             setMoney(money - totalPrice);
         }
+    } 
+
+    function acceptOrder(order) {
+        setTransportOrders(orders => {
+            const newOrders = [...orders];
+
+            const index = newOrders.findIndex(o => {
+                return o.id === order.id;
+            });
+
+            if (index > -1) {
+                newOrders.splice(index, 1);
+            }
+
+            return newOrders;
+        })
+
+        //update product qty in target city
+        const storagesNew = storages;
+
+        const index = storagesNew.findIndex((storage) => {
+            return storage.cityId === order.targetCityId;
+        });
+
+        if (index > -1) {
+            const goodIndex = storagesNew[index].storage.findIndex(
+                (good) => {
+                    return good.id === order.goodId;
+                }
+            );
+
+            if (goodIndex > -1) {
+                storagesNew[index].storage[goodIndex].qty += order.qty;
+            } else {
+                storagesNew[index].storage.push({
+                    id: order.goodId,
+                    qty: order.qty,
+                });
+            }
+        }
+
+        setStorages(storagesNew);
     }
 
     return (
         <div className="game">
-            {/* <Button onClick={logout}>Закончить игру</Button> */}
-            <h1 className="game-name">Название игры</h1>
+            <Button onClick={logout}>Закончить игру</Button>
+            <h1 className="game-name">Magnum opus</h1>
 
             <Cities
                 currentCity={currentCity}
@@ -335,10 +443,11 @@ const Game = () => {
                             onSell={(id, qty) => {
                                 sellGoods(id, qty);
                             }}
+                            onTransport={(targetCityId) => createTransportOrder(targetCityId)}
                         />
                     </div>
                     <div className="transporations">
-                        <Transporations />
+                        <Transporations orders={transportOrders} goods={goods} onAcceptOrder={acceptOrder}/>
                     </div>
                     <div className="stats">
                         <Stats days={days} money={money} />

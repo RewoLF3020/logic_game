@@ -115,3 +115,16 @@
         }
     }
 }
+
+.order-panel {
+    display: flex;
+    justify-content: space-between;
+    padding: 0px 30px 20px;
+
+    .select-city {
+        width: 143px;
+        background: none;
+        border: 1px solid #877f72;
+        color: #a68156;
+    }
+} 

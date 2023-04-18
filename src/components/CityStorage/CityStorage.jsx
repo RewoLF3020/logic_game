@@ -59,7 +59,7 @@ const CityStorage = (props) => {
             x: {
                 display: false,
                 grid: {
-                    drawOnChartArea: false,
+                    drawOnChartArea: true,
                 },
             },
         },
@@ -91,10 +91,7 @@ const CityStorage = (props) => {
                             <div key={"storage-item-" + good.id} className="good-item-wrapper">
 								<StorageItem good={good} onBuy={props.onBuy} />
                                 <div className="good-item-stats">
-                                    <Line
-                                        options={options}
-                                        data={getGoodData(good.priceStats)}
-                                    />
+                                    <Line options={options} data={getGoodData(good.priceStats)}/>
                                 </div>
                             </div>
                         );

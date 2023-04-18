@@ -8,7 +8,7 @@ body {
         sans-serif;
 }
 
-input {
+input, select {
     box-sizing: border-box;
 
     &:focus,
@@ -33,5 +33,15 @@ input {
 
     &:hover {
         color: white;
+    }
+
+    &[disabled] {
+        background: #777;
+        cursor: not-allowed;
+        color: #aaa;
+
+        &:hover {
+            color: #aaa;
+        }
     }
 }

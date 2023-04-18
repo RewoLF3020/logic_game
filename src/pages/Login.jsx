@@ -13,7 +13,7 @@ const Login = () => {
 
     return (
         <div className='login'>
-            <h1>Название игры</h1>
+            <h1>Magnum opus</h1>
             <Button onClick={login}>Начать игру</Button>
         </div>
     );
