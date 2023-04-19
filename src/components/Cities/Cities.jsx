@@ -8,14 +8,13 @@ const Citites = (props) => {
         <div className='cities-list'>
             {cities.map((city) => {
                 return (
-                    <a key={city.id} className={"city " + (props.currentCity === city.id ? 'active' : '')} 
-                        href='#'
+                    <span key={city.id} className={"city " + (props.currentCity === city.id ? 'active' : '')} 
                         onClick={() => {
                             props.onChange(city.id);
                         }}
                     >
                         {city.title}
-                    </a>
+                    </span>
                 );
             })}
         </div>

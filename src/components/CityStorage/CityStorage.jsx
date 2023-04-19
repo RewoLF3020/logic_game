@@ -37,9 +37,9 @@ const CityStorage = (props) => {
             intersect: false,
             caretSize: 3,
 
-            backgroundColor: "#44200c",
-            bodyFontColor: "#a68156",
-            borderColor: "#877f72",
+            backgroundColor: "#8d6048",
+            bodyFontColor: "#d6ba7a",
+            borderColor: "#8d6048",
             borderWidth: 1,
             displayColors: false,
 
@@ -52,12 +52,17 @@ const CityStorage = (props) => {
 
         scales: {
             y: {
+                ticks: {
+                    stepSize: 1,
+                    fontColor: "#d6ba7a",
+                    fontSize: 10
+                },                
                 grid: {
                     drawOnChartArea: false,
                 },
             },
             x: {
-                display: false,
+                display: true,
                 grid: {
                     drawOnChartArea: true,
                 },
@@ -73,8 +78,8 @@ const CityStorage = (props) => {
                     label: "Цена за шт.",
                     data: priceStats,
                     fill: false,
-                    backgroundColor: "#a68156",
-                    borderColor: "rgba(166, 129, 86, 0.2)",
+                    backgroundColor: "#8d6048",
+                    borderColor: "#8d604844",
                 },
             ],
         };

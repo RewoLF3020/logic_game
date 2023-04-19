@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { cities } from "../../cities";
 import "./Storage.scss";
 
 const Storage = (props) => {
@@ -9,6 +10,10 @@ const Storage = (props) => {
         return props.goods.find((item) => {
             return item.id === itemId;
         }).title;
+    }
+
+    function getTotalPrice() {
+        return parseInt(props.selectedProductPrice * qty * 0.9, 10);
     }
 
     return (
@@ -28,15 +33,11 @@ const Storage = (props) => {
                                         className={
                                             "good-item item-" +
                                             item.id +
-                                            (props.selectedGood === item.id
-                                                ? " selected"
-                                                : "")
+                                            (props.selectedGood === item.id ? " selected" : "")
                                         }
                                         onClick={() => props.onSelectGood(item.id)}
                                     >
-                                        <span className="good-description">
-                                            {item.qty} шт.
-                                        </span>
+                                        <span className="good-description"> {item.qty} шт.</span>
                                     </li>
                                 );
                             } else {
@@ -53,23 +54,31 @@ const Storage = (props) => {
                 {props.selectedGood ? (
                     <>
                         <div className="sell-panel">
-                            <div>{findGoodById(props.selectedGood)}</div>
-                            <div className="controls">
-                                <input
-                                    type="text"
-                                    className="input"
-                                    maxLength={3}
-                                    value={qty}
-                                    onChange={(e) => setQty(parseInt(e.target.value, 10) || "")
-                                    }
-                                />{" "} шт.
-                                <button
-                                    className="button"
-                                    onClick={() => props.onSell(props.selectedGood, qty)}
-                                >
-                                    Продать
-                                </button>
-                            </div>
+                            <div className="sell-panel-content">
+                                <div>{findGoodById(props.selectedGood)}</div>
+                                    <div className="controls">
+                                        <input
+                                            type="text"
+                                            className="input"
+                                            maxLength={3}
+                                            value={qty}
+                                            onChange={(e) => setQty(parseInt(e.target.value, 10) || "")
+                                            }
+                                        />{" "} шт.
+                                        <button
+                                            className="button"
+                                            onClick={() => props.onSell(props.selectedGood, qty, getTotalPrice())}
+                                            disabled={!qty || !props.selectedProductPrice}
+                                        >
+                                            Продать
+                                        </button>
+                                    </div>
+                                </div>
+                                {qty && props.selectedProductPrice ? (
+                                    <div className="sell-panel-info">
+                                        По цене {props.selectedProductPrice} x {qty} шт, налог: 10%. Итого: {getTotalPrice()}
+                                    </div>
+                                ) : ''}
                         </div>
                         <div className="order-panel">
                             <div>
@@ -78,15 +87,16 @@ const Storage = (props) => {
                                     value={targetCityId}
                                     onChange={(e) => setTargetCityId(parseInt(e.currentTarget.value, 10))}
                                 >
-                                    <option value={1}>Город 1</option>
-                                    <option value={2}>Город 2</option>
-                                    <option value={3}>Город 3</option>
+                                    {cities.map(city => {
+                                        return <option disabled={city.id === props.currentCity} value={city.id}>{city.title}</option>
+                                    })}
                                 </select>
                             </div>
                             <div className="controls">
                                 <button
                                     className="button"
                                     onClick={() => props.onTransport(parseInt(targetCityId, 10))}
+                                    disabled={targetCityId === props.currentCity}
                                 >
                                     Перевезти
                                 </button>

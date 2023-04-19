@@ -6,6 +6,8 @@ import CityStorage from "../components/CityStorage/CityStorage";
 import Storage from "../components/Storage/Storage";
 import Transporations from "../components/Transporations/Transporations";
 import Stats from "../components/Stats/Stats";
+import Bank from "../components/Bank/Bank";
+import { defaultCityStoragesData, defaultDeposits, defaultStoragesData, goods } from "../config";
 
 const Game = () => {
     const { isAuth, setIsAuth } = useContext(AuthContext);
@@ -19,150 +21,19 @@ const Game = () => {
 
     const [selectedGood, setSelectedGood] = useState(1);
 
-    const [storages, setStorages] = useState([
-        {
-            cityId: 1,
-            storage: [
-                {
-                    id: 1,
-                    qty: 10,
-                },
-                {
-                    id: 2,
-                    qty: 20,
-                },
-                {
-                    id: 3,
-                    qty: 204,
-                },
-                {
-                    id: 4,
-                    qty: 200,
-                },
-                {
-                    id: 5,
-                    qty: 120,
-                },
-                {
-                    id: 6,
-                    qty: 10,
-                },
-                {
-                    id: 7,
-                    qty: 20,
-                },
-            ],
-        },
-        {
-            cityId: 2,
-            storage: [
-                {
-                    id: 1,
-                    qty: 5,
-                },
-            ],
-        },
-        {
-            cityId: 3,
-            storage: [],
-        },
-    ]);
+    const [deposits, setDeposits] = useState(defaultDeposits);
 
-    const [cityStorages, setCityStorages] = useState([
-        {
-            cityId: 1,
-            storage: [
-                {
-                    id: 1,
-                    priceStats: [10, 15, 18, 13, 15, 18, 10],
-                    maxStep: 5,
-                    minPrice: 10,
-                    maxPrice: 40,
-                },
-                {
-                    id: 2,
-                    priceStats: [12, 13, 14, 15, 16, 11, 18],
-                    maxStep: 7,
-                    minPrice: 5,
-                    maxPrice: 70,
-                },
-                {
-                    id: 3,
-                    priceStats: [25, 28, 31, 27, 23, 20, 25],
-                    maxStep: 8,
-                    minPrice: 15,
-                    maxPrice: 50,
-                },
-            ],
-        },
-    ]);
+    const [playerStorages, setPlayerStorages] = useState(defaultStoragesData);
+
+    const [cityStorages, setCityStorages] = useState(defaultCityStoragesData);
 
     const [money, setMoney] = useState(1000);
     const [days, setDays] = useState(1);
 
-    const goods = [
-        {
-            id: 1,
-            title: "Пиво",
-        },
-        {
-            id: 2,
-            title: "Молоко",
-        },
-        {
-            id: 3,
-            title: "Пшеница",
-        },
-        {
-            id: 4,
-            title: "Грибы",
-        },
-        {
-            id: 5,
-            title: "Клевер",
-        },
-        {
-            id: 6,
-            title: "Лук",
-        },
-        {
-            id: 7,
-            title: "Виноград",
-        },
-        {
-            id: 8,
-            title: "Орехи",
-        },
-        {
-            id: 9,
-            title: "Вилы",
-        },
-        {
-            id: 10,
-            title: "Доски",
-        },
-        {
-            id: 11,
-            title: "Коса",
-        },
-        {
-            id: 12,
-            title: "Лопата",
-        },
-        {
-            id: 13,
-            title: "Топор",
-        },
-        {
-            id: 14,
-            title: "Кирка",
-        },
-    ];
-
     const [transportOrders, setTransportOrders] = useState([]);
     const [orderId, setOrderId] = useState(1);
 
-    function getStorageByCity() {
+    function getCurrentStorage(storages) {
         const store = storages.find((storage) => {
             return storage.cityId === currentCity;
         });
@@ -174,20 +45,8 @@ const Game = () => {
         }
     }
 
-    function getCityStorageByCity() {
-        const store = cityStorages.find((storage) => {
-            return storage.cityId === currentCity;
-        });
-
-        if (store) {
-            return store.storage;
-        } else {
-            return [];
-        }
-    }
-
-    function sellGoods(goodId, qty) {
-        const storagesNew = storages;
+    function sellGoods(goodId, qty, totalPrice) {
+        const storagesNew = [...playerStorages];
         let moneyNew = money;
 
         const index = storagesNew.findIndex((storage) => {
@@ -200,18 +59,16 @@ const Game = () => {
             });
 
             if (goodIndex > -1) {
-                const currentCityStorage = getCityStorageByCity();
+                const currentCityStorage = getCurrentStorage(cityStorages);
 
                 const cityGoodIndex = currentCityStorage.findIndex((good) => {
                     return good.id === goodId;
                 });
 
                 if (cityGoodIndex > -1) {
-                    const price = currentCityStorage[cityGoodIndex].priceStats[currentCityStorage[cityGoodIndex].priceStats.length - 1];
-
                     if (storagesNew[index].storage[goodIndex].qty >= qty) {
                         storagesNew[index].storage[goodIndex].qty -= qty;
-                        moneyNew += qty * price;
+                        moneyNew += totalPrice;
 
                         if (storagesNew[index].storage[goodIndex].qty === 0) {
                             removeProduct(storagesNew[index].storage[goodIndex].id);
@@ -223,7 +80,7 @@ const Game = () => {
             }
         }
 
-        setStorages(storagesNew);
+        setPlayerStorages(storagesNew);
     }
 
     function getRandomInt(max) {
@@ -239,11 +96,9 @@ const Game = () => {
             for (let goodIndex = 0; goodIndex < storage.length; goodIndex++) {
                 const goodData = storage[goodIndex];
                 const priceChangeSign = getRandomInt(2) ? 1 : -1;
-                const priceChangeValue =
-                    getRandomInt(goodData.maxStep) * priceChangeSign;
+                const priceChangeValue = getRandomInt(goodData.maxStep + 1) * priceChangeSign; 
 
-                let newPrice =
-                    goodData.priceStats.slice(-1).pop() + priceChangeValue;
+                let newPrice = goodData.priceStats.slice(-1).pop() + priceChangeValue;
 
                 if (newPrice > goodData.maxPrice) {
                     newPrice = goodData.maxPrice;
@@ -269,7 +124,7 @@ const Game = () => {
         setTransportOrders((oldTransportOrders) => {
             const newOrders = [...oldTransportOrders];
 
-            newOrders.forEach((order, index) => {
+            newOrders.forEach((order) => {
                 if (order.days >=1) {
                     order.days -= 1;
                 } 
@@ -279,32 +134,42 @@ const Game = () => {
         })
     }
 
+    function updateDeposits() {
+        setDeposits((oldDeposits) => {
+            const newDeposits = [...oldDeposits];
+
+            newDeposits.forEach((deposit, index) => {
+                if (deposit.days >= 1) {
+                    deposit.days -= 1;
+                }
+
+                if (deposit.days === 0) {
+                    newDeposits.splice(index, 1);
+                    
+                    setMoney((oldMoney) => {
+                        return oldMoney + deposit.amount * 1.1;
+                    })
+                }
+            })
+            return newDeposits;
+        })
+    }
+
     function liveProcess() {
         setInterval(() => {
             updateCityStorages();
             updateTransportOrders();
+            updateDeposits();
             setDays((days) => days + 1);
         }, 5000);
     }
 
     useEffect(() => liveProcess(), []);
 
-    function getCityStorage() {
-        const store = cityStorages.find((storage) => {
-            return storage.cityId === currentCity;
-        });
-
-        if (store) {
-            return store.storage;
-        } else {
-            return [];
-        }
-    }
-
     function createTransportOrder(targetCityId) {
         const newOrders = [...transportOrders];
 
-        const storage = getStorageByCity();
+        const storage = getCurrentStorage(playerStorages);
 
         const goodIndex = storage.findIndex(good => good.id == selectedGood)
 
@@ -315,7 +180,7 @@ const Game = () => {
                 targetCityId,
                 goodId: selectedGood,
                 qty: storage[goodIndex].qty,
-                days: 1
+                days: 10
             });
 
             setOrderId(orderId + 1);
@@ -325,7 +190,7 @@ const Game = () => {
     }   
 
     function removeProduct(productId) {
-        const storagesNew = storages;
+        const storagesNew = playerStorages;
 
         const index = storagesNew.findIndex((storage) => {
             return storage.cityId === currentCity;
@@ -341,14 +206,14 @@ const Game = () => {
                 }
             }
 
-        setStorages(storagesNew);
+        setPlayerStorages(storagesNew);
     }
 
     function buyGoods(goodId, qty, price) {
         const totalPrice = qty * price;
 
         if (money >= totalPrice) {
-            const storagesNew = storages;
+            const storagesNew = playerStorages;
 
             const index = storagesNew.findIndex((storage) => {
                 return storage.cityId === currentCity;
@@ -374,7 +239,7 @@ const Game = () => {
                 }
             }
 
-            setStorages(storagesNew);
+            setPlayerStorages(storagesNew);
             setMoney(money - totalPrice);
         }
     } 
@@ -395,7 +260,7 @@ const Game = () => {
         })
 
         //update product qty in target city
-        const storagesNew = storages;
+        const storagesNew = playerStorages;
 
         const index = storagesNew.findIndex((storage) => {
             return storage.cityId === order.targetCityId;
@@ -418,12 +283,26 @@ const Game = () => {
             }
         }
 
-        setStorages(storagesNew);
+        setPlayerStorages(storagesNew);
+    }
+
+    function getSelectedProductPrice() {
+        const cityStorage = getCurrentStorage(cityStorages);
+
+        const product = cityStorage.find(product => {
+            return product.id === selectedGood;
+        })
+
+        if (product && product.priceStats) {
+            return product.priceStats[product.priceStats.length - 1] 
+        }
+
+        return 0;
     }
 
     return (
         <div className="game">
-            <Button onClick={logout}>Закончить игру</Button>
+            {/* <Button onClick={logout}>Закончить игру</Button> */}
             <h1 className="game-name">Magnum opus</h1>
 
             <Cities
@@ -436,13 +315,12 @@ const Game = () => {
                     <div className="storage">
                         <Storage
                             currentCity={currentCity}
-                            storage={getStorageByCity()}
+                            storage={getCurrentStorage(playerStorages)}
                             goods={goods}
                             selectedGood={selectedGood}
+                            selectedProductPrice={getSelectedProductPrice()}
                             onSelectGood={(goodId) => setSelectedGood(goodId)}
-                            onSell={(id, qty) => {
-                                sellGoods(id, qty);
-                            }}
+                            onSell={(id, qty, price) => sellGoods(id, qty, price)}
                             onTransport={(targetCityId) => createTransportOrder(targetCityId)}
                         />
                     </div>
@@ -452,11 +330,14 @@ const Game = () => {
                     <div className="stats">
                         <Stats days={days} money={money} />
                     </div>
+                    <div className="deposits">
+                        <Bank deposits={deposits} />
+                    </div>
                 </div>
                 <div className="column">
                     <div className="city-storage">
                         <CityStorage
-                            storage={getCityStorage()}
+                            storage={getCurrentStorage(cityStorages)}
                             onBuy={(goodId, number, price) =>
                                 buyGoods(goodId, number, price)
                             }
