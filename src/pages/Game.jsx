@@ -7,7 +7,14 @@ import Storage from "../components/Storage/Storage";
 import Transporations from "../components/Transporations/Transporations";
 import Stats from "../components/Stats/Stats";
 import Bank from "../components/Bank/Bank";
-import { defaultCityStoragesData, defaultDeposits, defaultStoragesData, goods } from "../config";
+import { 
+    defaultCityStoragesData,
+    defaultDeposits, 
+    defaultStoragesData, 
+    goods,
+    settings,
+    gameStatuses
+} from "../config";
 
 const Game = () => {
     const { isAuth, setIsAuth } = useContext(AuthContext);
@@ -27,11 +34,13 @@ const Game = () => {
 
     const [cityStorages, setCityStorages] = useState(defaultCityStoragesData);
 
-    const [money, setMoney] = useState(1000);
+    const [money, setMoney] = useState(settings.startMoney);
     const [days, setDays] = useState(1);
 
     const [transportOrders, setTransportOrders] = useState([]);
     const [orderId, setOrderId] = useState(1);
+
+    const [gameStatus, setGameStatus] = useState(gameStatuses.new);
 
     function getCurrentStorage(storages) {
         const store = storages.find((storage) => {
@@ -156,22 +165,37 @@ const Game = () => {
     }
 
     function liveProcess() {
-        setInterval(() => {
+        setTimeout(() => {
             updateCityStorages();
             updateTransportOrders();
             updateDeposits();
+            checkGameStatus(days + 1);
             setDays((days) => days + 1);
         }, 5000);
     }
 
-    useEffect(() => liveProcess(), []);
+    function checkGameStatus(days) {
+        if (days >= settings.goalDays && money < settings.goalMoney) {
+            setGameStatus(gameStatuses.fail);   
+        }
+
+        if (money >= settings.goalMoney ) {
+            setGameStatus(gameStatuses.win);
+        }
+    }
+
+    useEffect(() => {
+        if (gameStatus === gameStatuses.new) {
+            liveProcess();
+        }
+    }, [days]);
 
     function createTransportOrder(targetCityId) {
         const newOrders = [...transportOrders];
 
         const storage = getCurrentStorage(playerStorages);
 
-        const goodIndex = storage.findIndex(good => good.id == selectedGood)
+        const goodIndex = storage.findIndex(good => good.id === selectedGood)
 
         if (goodIndex > -1) {
             newOrders.push({
@@ -300,10 +324,38 @@ const Game = () => {
         return 0;
     }
 
+    function openDeposit(amount) {
+        if (amount > 0 && money >= amount) {
+            setDeposits((oldDeposits) => {
+                const newDeposits = [...oldDeposits];
+    
+                newDeposits.push({
+                    days: 30,
+                    amount
+                });
+
+                setMoney((oldMoney) => {
+                    return oldMoney - amount;
+                })
+
+                return newDeposits;
+            })
+        }
+    }
+
     return (
         <div className="game">
             {/* <Button onClick={logout}>Закончить игру</Button> */}
             <h1 className="game-name">Magnum opus</h1>
+
+            {gameStatus === gameStatuses.win ? (
+                <h2 className="game-status win">Вы справились!</h2>
+            ) : ''}
+
+            {gameStatus === gameStatuses.fail ? (
+            <h2 className="game-status fail">Вы не справились!</h2>
+            ) : ''} 
+ 
 
             <Cities
                 currentCity={currentCity}
@@ -331,7 +383,7 @@ const Game = () => {
                         <Stats days={days} money={money} />
                     </div>
                     <div className="deposits">
-                        <Bank deposits={deposits} />
+                        <Bank deposits={deposits} onOpenDeposit={openDeposit} money={money}/>
                     </div>
                 </div>
                 <div className="column">

@@ -56,30 +56,31 @@ const Storage = (props) => {
                         <div className="sell-panel">
                             <div className="sell-panel-content">
                                 <div>{findGoodById(props.selectedGood)}</div>
-                                    <div className="controls">
-                                        <input
-                                            type="text"
-                                            className="input"
-                                            maxLength={3}
-                                            value={qty}
-                                            onChange={(e) => setQty(parseInt(e.target.value, 10) || "")
-                                            }
-                                        />{" "} шт.
-                                        <button
-                                            className="button"
-                                            onClick={() => props.onSell(props.selectedGood, qty, getTotalPrice())}
-                                            disabled={!qty || !props.selectedProductPrice}
-                                        >
-                                            Продать
-                                        </button>
-                                    </div>
+                                <div className="controls">
+                                    <input
+                                        type="text"
+                                        className="input"
+                                        maxLength={3}
+                                        value={qty}
+                                        onChange={(e) => setQty(parseInt(e.target.value, 10) || "")
+                                        }
+                                    />{" "} шт.
+                                    <button
+                                        className="button"
+                                        onClick={() => props.onSell(props.selectedGood, qty, getTotalPrice())}
+                                        disabled={!qty || !props.selectedProductPrice}
+                                    >
+                                        Продать
+                                    </button>
                                 </div>
-                                {qty && props.selectedProductPrice ? (
-                                    <div className="sell-panel-info">
-                                        По цене {props.selectedProductPrice} x {qty} шт, налог: 10%. Итого: {getTotalPrice()}
-                                    </div>
-                                ) : ''}
+                            </div>
+                            {qty && props.selectedProductPrice ? (
+                                <div className="sell-panel-info">
+                                    По цене {props.selectedProductPrice} x {qty} шт, налог: 10%. Итого: {getTotalPrice()}
+                                </div>
+                            ) : ''}
                         </div>
+
                         <div className="order-panel">
                             <div>
                                 <select 
@@ -88,7 +89,13 @@ const Storage = (props) => {
                                     onChange={(e) => setTargetCityId(parseInt(e.currentTarget.value, 10))}
                                 >
                                     {cities.map(city => {
-                                        return <option disabled={city.id === props.currentCity} value={city.id}>{city.title}</option>
+                                        return <option 
+                                                    key={'storage-' + city.id}
+                                                    disabled={city.id === props.currentCity} 
+                                                    value={city.id}
+                                                >
+                                                    {city.title}
+                                                </option>
                                     })}
                                 </select>
                             </div>

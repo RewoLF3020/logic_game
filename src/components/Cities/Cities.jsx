@@ -8,7 +8,9 @@ const Citites = (props) => {
         <div className='cities-list'>
             {cities.map((city) => {
                 return (
-                    <span key={city.id} className={"city " + (props.currentCity === city.id ? 'active' : '')} 
+                    <span 
+                        key={'city-' + city.id} 
+                        className={"city " + (props.currentCity === city.id ? 'active' : '')} 
                         onClick={() => {
                             props.onChange(city.id);
                         }}

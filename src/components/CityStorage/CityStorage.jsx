@@ -54,7 +54,7 @@ const CityStorage = (props) => {
             y: {
                 ticks: {
                     stepSize: 1,
-                    fontColor: "#d6ba7a",
+                    color: "#d6ba7a",
                     fontSize: 10
                 },                
                 grid: {
@@ -63,6 +63,9 @@ const CityStorage = (props) => {
             },
             x: {
                 display: true,
+                ticks: {
+                    color: "#d6ba7a"
+                },
                 grid: {
                     drawOnChartArea: true,
                 },
