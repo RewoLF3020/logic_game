@@ -4,7 +4,7 @@ import Button from "../components/UI/button/Button";
 import Cities from "../components/Cities/Cities";
 import CityStorage from "../components/CityStorage/CityStorage";
 import Storage from "../components/Storage/Storage";
-import Transporations from "../components/Transporations/Transporations";
+import Transportations from "../components/Transportations/Transportations";
 import Stats from "../components/Stats/Stats";
 import Bank from "../components/Bank/Bank";
 import { 
@@ -377,7 +377,7 @@ const Game = () => {
                         />
                     </div>
                     <div className="transporations">
-                        <Transporations orders={transportOrders} goods={goods} onAcceptOrder={acceptOrder}/>
+                        <Transportations orders={transportOrders} goods={goods} onAcceptOrder={acceptOrder}/>
                     </div>
                     <div className="stats">
                         <Stats days={days} money={money} />

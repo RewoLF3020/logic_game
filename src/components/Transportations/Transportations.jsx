@@ -1,6 +1,6 @@
 import React from "react";
 import { cities } from "../../cities";
-import "./Transporations.scss";
+import "./Transportations.scss";
 
 const Transporations = (props) => {
     function findGoodById(itemId) {
@@ -22,7 +22,7 @@ const Transporations = (props) => {
             <div className="panel">
                 {props.orders.map((order) => {
                     return (
-                        <div className="good-item-wrapper">
+                        <div className="good-item-wrapper" key={order.id}>
                             <div className="good-item-description">
                                 <div className={"good-item item-" + order.goodId}></div>
                             </div>
