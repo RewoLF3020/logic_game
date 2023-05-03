@@ -16,10 +16,10 @@ const Transporations = (props) => {
     }
 
     return (
-        <div className="transportations">
+        <div className="transportations" style={{marginBottom: 10}}>
             <h2 className="title">Активные перевозки</h2>
-
-            <div className="panel">
+            {props.orders.length ?
+                <div className="panel">
                 {props.orders.map((order) => {
                     return (
                         <div className="good-item-wrapper" key={order.id}>
@@ -48,6 +48,8 @@ const Transporations = (props) => {
                     );
                 })}
             </div>
+            : ""
+            }
         </div>
     );
 };

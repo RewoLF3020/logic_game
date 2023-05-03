@@ -1,6 +1,6 @@
 import React from 'react';
-import './Stats.scss';
 import { settings } from '../../config';
+import './Stats.scss';
 
 const Stats = (props) => {
     return (

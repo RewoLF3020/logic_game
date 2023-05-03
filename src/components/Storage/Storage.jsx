@@ -6,6 +6,15 @@ const Storage = (props) => {
     const [qty, setQty] = useState("");
     const [targetCityId, setTargetCityId] = useState(1);
 
+    function selectedGoodQty(id)
+    {   
+        const selected = props.storage.find((good) => {
+            return good.id === id;
+        })
+        
+        return selected.qty;
+    }
+
     function findGoodById(itemId) {
         return props.goods.find((item) => {
             return item.id === itemId;
@@ -21,7 +30,7 @@ const Storage = (props) => {
             <h2 className="title">Мой склад</h2>
             <div className="panel">
                 <ul className="goods">
-                    {Array(8)
+                    {Array(16)
                         .fill()
                         .map((i, index) => {
                             if (props.storage[index]) {
@@ -68,7 +77,7 @@ const Storage = (props) => {
                                     <button
                                         className="button"
                                         onClick={() => props.onSell(props.selectedGood, qty, getTotalPrice())}
-                                        disabled={!qty || !props.selectedProductPrice}
+                                        disabled={!qty || !props.selectedProductPrice || selectedGoodQty(props.selectedGood) < qty}
                                     >
                                         Продать
                                     </button>

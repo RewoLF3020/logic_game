@@ -8,7 +8,8 @@
 .game {
 	margin: 20px auto;
 	text-align: center;
-	width: 750px;
+	width: 1220px;
+	//height: auto;
 	background: $color1;
 
 	.game-name {
@@ -32,13 +33,19 @@
 
 	.content {
 		display: flex;
-		justify-content: space-between;
+		//justify-content: space-between;
 		padding: 10px;
 
 		.column {
-			width: 250px;
+			width: 470px;
+			padding-left: 10px;
+
+			&.sec {
+				width: 275px; //
+			}
+
 			&:last-child {
-				width: 470px;
+				width: 440px;
 			}
 		}
 	}

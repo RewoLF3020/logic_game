@@ -15,9 +15,13 @@ import {
     settings,
     gameStatuses
 } from "../config";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { setDays } from "../store/gameSlice";
+import Mixing from "../components/Mixing/Mixing";
 
 const Game = () => {
-    const { isAuth, setIsAuth } = useContext(AuthContext);
+    const { /* isAuth, */ setIsAuth } = useContext(AuthContext);
 
     const logout = () => {
         setIsAuth(false);
@@ -36,6 +40,8 @@ const Game = () => {
 
     const [money, setMoney] = useState(settings.startMoney);
     const [days, setDays] = useState(1);
+    //const days = useSelector(state => state.days.days);
+    //const dispatch = useDispatch();
 
     const [transportOrders, setTransportOrders] = useState([]);
     const [orderId, setOrderId] = useState(1);
@@ -84,6 +90,7 @@ const Game = () => {
                         }
 
                         setMoney(moneyNew);    
+                        setSelectedGood(0);
                     }
                 }
             }
@@ -171,7 +178,10 @@ const Game = () => {
             updateDeposits();
             checkGameStatus(days + 1);
             setDays((days) => days + 1);
+            //dispatch(setDays(1));
         }, 5000);
+        //localStorage.setItem("days", days);
+        //console.log(localStorage.getItem("days"));
     }
 
     function checkGameStatus(days) {
@@ -188,6 +198,7 @@ const Game = () => {
         if (gameStatus === gameStatuses.new) {
             liveProcess();
         }
+    // eslint-disable-next-line
     }, [days]);
 
     function createTransportOrder(targetCityId) {
@@ -364,6 +375,16 @@ const Game = () => {
 
             <div className="content">
                 <div className="column">
+                    <div className="city-storage">
+                        <CityStorage
+                            storage={getCurrentStorage(cityStorages)}
+                            onBuy={(goodId, number, price) =>
+                                buyGoods(goodId, number, price)
+                            }
+                        />
+                    </div>
+                </div>
+                <div className="column sec">
                     <div className="storage">
                         <Storage
                             currentCity={currentCity}
@@ -386,14 +407,10 @@ const Game = () => {
                         <Bank deposits={deposits} onOpenDeposit={openDeposit} money={money}/>
                     </div>
                 </div>
+                
                 <div className="column">
-                    <div className="city-storage">
-                        <CityStorage
-                            storage={getCurrentStorage(cityStorages)}
-                            onBuy={(goodId, number, price) =>
-                                buyGoods(goodId, number, price)
-                            }
-                        />
+                    <div className="mixing">
+                        <Mixing />
                     </div>
                 </div>
             </div>

@@ -30,25 +30,31 @@ const Bank = ({ deposits, onOpenDeposit, money }) => {
                         </div>
                     </div>
                 </div>
-                {deposits.map((deposit, index) => {
-                    return (
-                        <div className="good-item-wrapper" key={'deposit-' + index}>
-                            <div className="good-item-description">
-                                <div className={"good-item item-deposit"}></div>
-                            </div>
-                            <div className="good-item-deposit-info">
-                                <div>
-                                    <div className="header">
-                                        Сумма: {deposit.amount}
-                                    </div>
-                                    <div className="days">
-                                        Дней до закрытия: {deposit.days}
+                {deposits.length ? 
+                    <div style={{width: 269, height: 62, overflow: "auto"}}>
+                    {deposits.map((deposit, index) => {
+                        return (
+                            <div className="good-item-wrapper" key={'deposit-' + index}>
+                                <div className="good-item-description">
+                                    <div className={"good-item item-deposit"}></div>
+                                </div>
+                                <div className="good-item-deposit-info">
+                                    <div>
+                                        <div className="header">
+                                            Сумма: {deposit.amount}
+                                        </div>
+                                        <div className="days">
+                                            Дней до закрытия: {deposit.days}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    );
-                })}
+                        );
+                    })}
+                </div>
+                : ""
+                }
+                
             </div>
         </div>
     );

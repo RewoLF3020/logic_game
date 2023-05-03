@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import StorageItem from "./components/StorageItem";
 import "./CityStorage.scss";
 import {
@@ -93,14 +93,15 @@ const CityStorage = (props) => {
             <h2 className="title">Городской склад</h2>
 
             <div className="panel">
-                <div className="city-goods">
+                <div className="city-goods" style={{width: 464, height: 659, overflow: "auto"}}>
                     {props.storage.map((good) => {
                         return (
                             <div key={"storage-item-" + good.id} className="good-item-wrapper">
-								<StorageItem good={good} onBuy={props.onBuy} />
                                 <div className="good-item-stats">
                                     <Line options={options} data={getGoodData(good.priceStats)}/>
                                 </div>
+								<StorageItem good={good} onBuy={props.onBuy} />
+
                             </div>
                         );
                     })}

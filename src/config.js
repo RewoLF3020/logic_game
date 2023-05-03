@@ -22,6 +22,14 @@ export const defaultStoragesData = [
                 id: 7,
                 qty: 20,
             },
+            /* {
+                id: 4,
+                qty: 40
+            },
+            {
+                id: 5, 
+                qty: 100
+            } */
         ],
     },
     {
@@ -37,6 +45,10 @@ export const defaultStoragesData = [
         cityId: 3,
         storage: [],
     },
+    {
+        cityId: 4,
+        storage: [],
+    }
 ];
 
 
@@ -175,6 +187,46 @@ export const defaultCityStoragesData = [
             },
         ],
     },
+    {
+        cityId: 4,
+        storage: [
+            {
+                id: 1,
+                priceStats: [12, 13, 14, 15, 16, 15, 14],
+                maxStep: 1,
+                minPrice: 10,
+                maxPrice: 20,
+            },
+            {
+                id: 6,
+                priceStats: [5, 6, 7, 8, 7, 8, 9],
+                maxStep: 1,
+                minPrice: 5,
+                maxPrice: 10, 
+            },
+            {
+                id: 13,
+                priceStats: [15, 20, 25, 30, 22, 21],
+                maxStep: 5,
+                minPrice: 15, 
+                maxPrice: 40,
+            },
+            {
+                id: 14,
+                priceStats: [20, 25, 22, 27, 26, 20, 30],
+                maxStep: 5,
+                minPrice: 25,
+                maxPrice: 35,
+            },
+            {
+                id: 7,
+                priceStats: [15, 20, 25, 23, 22, 27, 28],
+                maxStep: 5,
+                minPrice: 15,
+                maxPrice: 40,
+            },
+        ],
+    },
 ];
 
 
@@ -182,7 +234,7 @@ export const defaultDeposits = [
     {
         id: 1,
         amount: 100,
-        days: 10 
+        days: 10
     },
     {
         id: 2,
@@ -225,6 +277,14 @@ export const goods = [
         id: 14,
         title: "Кирка",
     },
+    /* {
+        id: 4,
+        title: "Грибы",
+    },
+    {
+        id: 5, 
+        title: "Клевер"
+    } */
 ];
 
 export const settings = {

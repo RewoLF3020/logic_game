@@ -1,6 +1,12 @@
 @import "./../../vars.scss";
 
 .transportations {
+    .panel {
+        width: 269px;
+        height: 65px;
+        overflow: auto;    
+    }
+
     .good-item-wrapper {
         display: flex;
         justify-content: space-between;

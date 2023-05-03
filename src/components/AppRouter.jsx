@@ -5,7 +5,7 @@ import Login from "../pages/Login";
 import Game from "../pages/Game";
 
 const AppRouter = () => {
-    const { isAuth, setIsAuth } = useContext(AuthContext);
+    const { isAuth/* , setIsAuth */ } = useContext(AuthContext);
 
     return (
         <Routes>
