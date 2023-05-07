@@ -26,6 +26,7 @@ const StorageItem = (props) => {
                     }
                     setNumber('');
                 }}
+                disabled={parseInt(number * props.good.priceStats[props.good.priceStats.length - 1], 10) > props.money}
             >
                 Купить
             </button>

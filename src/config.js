@@ -244,6 +244,22 @@ export const defaultDeposits = [
 ];
 
 
+export const defaultResearchData = [
+    {
+        id: 2,
+        qty: 20,
+    },
+    {
+        id: 3,
+        qty: 204,
+    },
+    {
+        id: 6,
+        qty: 10,
+    },
+]
+
+
 export const goods = [
     {
         id: 1,

@@ -12,7 +12,8 @@ const Storage = (props) => {
             return good.id === id;
         })
         
-        return selected.qty;
+        if (selected)
+            return selected.qty;
     }
 
     function findGoodById(itemId) {
@@ -44,7 +45,10 @@ const Storage = (props) => {
                                             item.id +
                                             (props.selectedGood === item.id ? " selected" : "")
                                         }
-                                        onClick={() => props.onSelectGood(item.id)}
+                                        onClick={() => {
+                                            props.onSelectGood(item.id)
+                                            setQty("");
+                                        }}
                                     >
                                         <span className="good-description"> {item.qty} шт.</span>
                                     </li>

@@ -22,7 +22,10 @@ const Bank = ({ deposits, onOpenDeposit, money }) => {
                             />
                             <button
                                 className="button"
-                                onClick={() => onOpenDeposit(amount)}
+                                onClick={() => {
+                                    onOpenDeposit(amount);
+                                    setAmount('');
+                                }}
                                 disabled={!amount || amount > money}
                             >
                                 Открыть

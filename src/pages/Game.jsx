@@ -7,18 +7,17 @@ import Storage from "../components/Storage/Storage";
 import Transportations from "../components/Transportations/Transportations";
 import Stats from "../components/Stats/Stats";
 import Bank from "../components/Bank/Bank";
+import Mixing from "../components/Mixing/Mixing";
 import { 
     defaultCityStoragesData,
     defaultDeposits, 
     defaultStoragesData, 
     goods,
     settings,
-    gameStatuses
+    gameStatuses,
+    defaultResearchData
 } from "../config";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
-import { setDays } from "../store/gameSlice";
-import Mixing from "../components/Mixing/Mixing";
+
 
 const Game = () => {
     const { /* isAuth, */ setIsAuth } = useContext(AuthContext);
@@ -38,10 +37,10 @@ const Game = () => {
 
     const [cityStorages, setCityStorages] = useState(defaultCityStoragesData);
 
+    const [researchStorage, setResearchStorage] = useState(defaultResearchData);
+
     const [money, setMoney] = useState(settings.startMoney);
     const [days, setDays] = useState(1);
-    //const days = useSelector(state => state.days.days);
-    //const dispatch = useDispatch();
 
     const [transportOrders, setTransportOrders] = useState([]);
     const [orderId, setOrderId] = useState(1);
@@ -82,6 +81,9 @@ const Game = () => {
 
                 if (cityGoodIndex > -1) {
                     if (storagesNew[index].storage[goodIndex].qty >= qty) {
+                        if (storagesNew[index].storage[goodIndex].qty === qty)
+                            setSelectedGood(0);
+
                         storagesNew[index].storage[goodIndex].qty -= qty;
                         moneyNew += totalPrice;
 
@@ -90,7 +92,6 @@ const Game = () => {
                         }
 
                         setMoney(moneyNew);    
-                        setSelectedGood(0);
                     }
                 }
             }
@@ -180,8 +181,6 @@ const Game = () => {
             setDays((days) => days + 1);
             //dispatch(setDays(1));
         }, 5000);
-        //localStorage.setItem("days", days);
-        //console.log(localStorage.getItem("days"));
     }
 
     function checkGameStatus(days) {
@@ -221,6 +220,7 @@ const Game = () => {
             setOrderId(orderId + 1);
             removeProduct(selectedGood);
             setTransportOrders(newOrders);
+            setSelectedGood(0);
         }
     }   
 
@@ -370,7 +370,10 @@ const Game = () => {
 
             <Cities
                 currentCity={currentCity}
-                onChange={(city) => setCurrentCity(city)}
+                onChange={(city) => {
+                    setCurrentCity(city);
+                    setSelectedGood(0);
+                }}
             />
 
             <div className="content">
@@ -381,6 +384,7 @@ const Game = () => {
                             onBuy={(goodId, number, price) =>
                                 buyGoods(goodId, number, price)
                             }
+                            money={money}
                         />
                     </div>
                 </div>
@@ -410,7 +414,7 @@ const Game = () => {
                 
                 <div className="column">
                     <div className="mixing">
-                        <Mixing />
+                        <Mixing data={researchStorage} />
                     </div>
                 </div>
             </div>
