@@ -29,7 +29,9 @@ const Game = () => {
 
     const [currentCity, setCurrentCity] = useState(1);
 
-    const [selectedGood, setSelectedGood] = useState(1);
+    const [selectedGood, setSelectedGood] = useState("");
+
+    const [selectedMixGood, setSelectedMixGood] = useState("");
 
     const [deposits, setDeposits] = useState(defaultDeposits);
 
@@ -37,7 +39,7 @@ const Game = () => {
 
     const [cityStorages, setCityStorages] = useState(defaultCityStoragesData);
 
-    const [researchStorage, setResearchStorage] = useState(defaultResearchData);
+    const [researchStorages, setResearchStorages] = useState(defaultResearchData);
 
     const [money, setMoney] = useState(settings.startMoney);
     const [days, setDays] = useState(1);
@@ -244,6 +246,26 @@ const Game = () => {
         setPlayerStorages(storagesNew);
     }
 
+    function removeResearchProduct(resProdId) {
+        const newResearchStorages = researchStorages;
+
+        const index = newResearchStorages.findIndex((storage) => {
+            return storage.cityId === currentCity;
+        });
+
+        if (index > -1) {
+            const productIndex = newResearchStorages[index].storage.findIndex((product) => {
+                return product.id === resProdId;
+            });
+
+            if (productIndex > -1) {
+                    newResearchStorages[index].storage.splice(productIndex, 1);
+                }
+            }
+
+        setResearchStorages(newResearchStorages);
+    }
+
     function buyGoods(goodId, qty, price) {
         const totalPrice = qty * price;
 
@@ -255,16 +277,12 @@ const Game = () => {
             });
 
             if (index > -1) {
-                const goodIndex = storagesNew[index].storage.findIndex(
-                    (good) => {
+                const goodIndex = storagesNew[index].storage.findIndex((good) => {
                         return good.id === goodId;
-                    }
-                );
+                    });
 
                 if (goodIndex > -1) {
-                    const newQty =
-                        parseInt(storagesNew[index].storage[goodIndex].qty) +
-                        parseInt(qty);
+                    const newQty = parseInt(storagesNew[index].storage[goodIndex].qty) + parseInt(qty);
                     storagesNew[index].storage[goodIndex].qty = newQty;
                 } else {
                     storagesNew[index].storage.push({
@@ -278,6 +296,124 @@ const Game = () => {
             setMoney(money - totalPrice);
         }
     } 
+
+    function getQty(id, storages) {
+        const index = storages.findIndex((storage) => {
+            return storage.cityId === currentCity;
+        });
+
+        if (index > -1) {
+            const goodIndex = storages[index].storage.findIndex((good) => {
+                return good.id === id;
+            });
+
+            if (goodIndex > -1) {
+                const qty = parseInt(storages[index].storage[goodIndex].qty);
+                return qty;
+            }
+        }
+    }
+
+    function moveGoods(goodId) {
+        if (selectedGood === goodId) {
+            const newResearchStorages = researchStorages;
+            const qty = getQty(selectedGood, playerStorages);
+
+            const index = newResearchStorages.findIndex((storage) => {
+                return storage.cityId === currentCity;
+            });
+
+            if (index > -1) {
+                const goodIndex = newResearchStorages[index].storage.findIndex((good) => {
+                    return good.id === goodId;
+                });
+                
+                if (goodIndex > -1) {
+                    const newQty = parseInt(newResearchStorages[index].storage[goodIndex].qty) + parseInt(qty);
+                    newResearchStorages[index].storage[goodIndex].qty = newQty;
+                    removeProduct(selectedGood);
+                    setResearchStorages(newResearchStorages);
+                    setSelectedGood(0);
+                }
+            }
+
+        } else {
+            if (selectedGood && !goodId) {
+                const newResearchStorages = researchStorages;
+                const qty = getQty(selectedGood, playerStorages);
+                
+                const index = newResearchStorages.findIndex((storage) => {
+                    return storage.cityId === currentCity;
+                });
+
+                if (index > -1) {
+                    const goodIndex = newResearchStorages[index].storage.findIndex((good) => {
+                        return good.id === selectedGood;
+                    });
+
+                    if (goodIndex < 0) {
+                        newResearchStorages[index].storage.push({
+                            id: selectedGood,
+                            qty: qty,
+                        })
+                        removeProduct(selectedGood);    
+                        setResearchStorages(newResearchStorages);
+                        setSelectedGood(0);
+                    }
+                }
+            }
+        }
+    }
+
+    function moveGoodsBack(goodId) {
+        if (selectedMixGood === goodId) {
+            const storagesNew = playerStorages;
+            const qty = getQty(selectedMixGood, researchStorages);
+
+            const index = storagesNew.findIndex((storage) => {
+                return storage.cityId === currentCity;
+            });
+
+            if (index > -1) {
+                const goodIndex = storagesNew[index].storage.findIndex((good) => {
+                    return good.id === goodId;
+                });
+
+                if (goodIndex > -1) {
+                    const newQty = parseInt(storagesNew[index].storage[goodIndex].qty) + parseInt(qty);
+                    storagesNew[index].storage[goodIndex].qty = newQty;
+                    removeResearchProduct(selectedMixGood);
+                    setPlayerStorages(storagesNew);
+                    setSelectedMixGood(0);
+                }
+            }
+        } else {
+            if (selectedMixGood && !goodId) {
+                const storagesNew = playerStorages;
+                const qty = getQty(selectedMixGood, researchStorages);
+
+                const index = storagesNew.findIndex((storage) => {
+                    return storage.cityId === currentCity;
+                });
+
+                if (index > -1) {
+                    const goodIndex = storagesNew[index].storage.findIndex((good) => {
+                        return good.id === goodId;
+                    });
+
+                    if (goodIndex < 0) {
+                        storagesNew[index].storage.push({
+                            id: selectedMixGood,
+                            qty: qty,
+                        })
+                        removeResearchProduct(selectedMixGood);
+                        setPlayerStorages(storagesNew);
+                        setSelectedMixGood(0);
+                    }
+                }
+            }
+        }
+    }
 
     function acceptOrder(order) {
         setTransportOrders(orders => {
@@ -399,6 +535,7 @@ const Game = () => {
                             onSelectGood={(goodId) => setSelectedGood(goodId)}
                             onSell={(id, qty, price) => sellGoods(id, qty, price)}
                             onTransport={(targetCityId) => createTransportOrder(targetCityId)}
+                            onMove={(goodId) => moveGoodsBack(goodId)}
                         />
                     </div>
                     <div className="transporations">
@@ -412,9 +549,14 @@ const Game = () => {
                     </div>
                 </div>
                 
-                <div className="column">
+                <div className="column" onClick={() => setSelectedMixGood("")}>
                     <div className="mixing">
-                        <Mixing data={researchStorage} />
+                        <Mixing 
+                            data={getCurrentStorage(researchStorages)} 
+                            selectedMixGood={selectedMixGood} 
+                            onSelectMixGood={(goodId) => setSelectedMixGood(goodId)}
+                            onMove={(goodId) => moveGoods(goodId)}
+                        />
                     </div>
                 </div>
             </div>
