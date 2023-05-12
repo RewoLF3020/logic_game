@@ -1,9 +1,28 @@
 @import "./../../vars.scss";
 
+.tips {
+    .panel {
+        width: 431px;
+        height: 248px;
+        overflow: auto;
+    }
+}
+
+.mix {
+    .panel {
+        width: 433px;
+        height: 64px;
+    }
+}
+
 .mixing-goods {
-    display: inline-block;
+    display: inline-flex;
     padding: 0;
     margin: 0;
+
+    &.potions {
+        display: inline-flex;
+    }
 
     .mix-item {
         position: relative;
@@ -18,6 +37,10 @@
         background-image: url(../../icons.png);
         background-repeat: no-repeat;
         cursor: pointer;
+
+        &.selected {
+            border-color: $color5;
+        }
 
         .good-description {
             position: absolute;

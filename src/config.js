@@ -39,6 +39,10 @@ export const defaultStoragesData = [
                 id: 1,
                 qty: 5,
             },
+            {
+                id: 7,
+                qty: 20,
+            },
         ],
     },
     {
@@ -230,6 +234,53 @@ export const defaultCityStoragesData = [
 ];
 
 
+export const defaultResearchData = [
+    {
+        cityId: 1,
+        storage: []
+    },
+    {
+        cityId: 2,
+        storage: []
+    },
+    {
+        cityId: 3,
+        storage: [],
+    },
+    {
+        cityId: 4,
+        storage: [],
+    }
+]
+
+
+export const defaultMixData = [
+    {
+        cityId: 1,
+        storage: [{
+            id: 1,
+            qty: 20,
+        },
+        {
+            id: 2,
+            qty: 20,
+        },]
+    },
+    {
+        cityId: 2,
+        storage: []
+    },
+    {
+        cityId: 3,
+        storage: [],
+    },
+    {
+        cityId: 4,
+        storage: [],
+    }
+]
+
+
 export const defaultDeposits = [
     {
         id: 1,
@@ -242,22 +293,6 @@ export const defaultDeposits = [
         days: 20
     }
 ];
-
-
-export const defaultResearchData = [
-    {
-        id: 2,
-        qty: 20,
-    },
-    {
-        id: 3,
-        qty: 204,
-    },
-    {
-        id: 6,
-        qty: 10,
-    },
-]
 
 
 export const goods = [

@@ -30,7 +30,7 @@ const Storage = (props) => {
         <div>
             <h2 className="title">Мой склад</h2>
             <div className="panel">
-                <ul className="goods">
+                <ul className="goods" onClick={() => props.onSelectGood("")}>
                     {Array(16)
                         .fill()
                         .map((i, index) => {
@@ -45,9 +45,14 @@ const Storage = (props) => {
                                             item.id +
                                             (props.selectedGood === item.id ? " selected" : "")
                                         }
-                                        onClick={() => {
-                                            props.onSelectGood(item.id)
+                                        onClick={(e) => {
+                                            props.onSelectGood(item.id);
                                             setQty("");
+                                            props.onMove(item.id);
+                                            props.onMoveFromMix(item.id);
+                                            e.stopPropagation();
+                                            props.onSelectResGood("");
+                                            props.onSelectMixGood("");
                                         }}
                                     >
                                         <span className="good-description"> {item.qty} шт.</span>
@@ -58,6 +63,10 @@ const Storage = (props) => {
                                     <li
                                         className="good-item no-item"
                                         key={"empty-cell-" + index}
+                                        onClick={() => {
+                                            props.onMove();
+                                            props.onMoveFromMix();
+                                        }}
                                     ></li>
                                 );
                             }

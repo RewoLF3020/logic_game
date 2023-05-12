@@ -15,7 +15,8 @@ import {
     goods,
     settings,
     gameStatuses,
-    defaultResearchData
+    defaultResearchData,
+    defaultMixData
 } from "../config";
 
 
@@ -29,7 +30,11 @@ const Game = () => {
 
     const [currentCity, setCurrentCity] = useState(1);
 
-    const [selectedGood, setSelectedGood] = useState(1);
+    const [selectedGood, setSelectedGood] = useState("");
+
+    const [selectedResGood, setSelectedResGood] = useState("");
+
+    const [selectedMixGood, setSelectedMixGood] = useState("");
 
     const [deposits, setDeposits] = useState(defaultDeposits);
 
@@ -37,7 +42,9 @@ const Game = () => {
 
     const [cityStorages, setCityStorages] = useState(defaultCityStoragesData);
 
-    const [researchStorage, setResearchStorage] = useState(defaultResearchData);
+    const [researchStorages, setResearchStorages] = useState(defaultResearchData);
+
+    const [mixStorages, setMixStorages] = useState(defaultMixData);
 
     const [money, setMoney] = useState(settings.startMoney);
     const [days, setDays] = useState(1);
@@ -88,7 +95,7 @@ const Game = () => {
                         moneyNew += totalPrice;
 
                         if (storagesNew[index].storage[goodIndex].qty === 0) {
-                            removeProduct(storagesNew[index].storage[goodIndex].id);
+                            removeProduct(storagesNew[index].storage[goodIndex].id, playerStorages);
                         }
 
                         setMoney(moneyNew);    
@@ -179,7 +186,6 @@ const Game = () => {
             updateDeposits();
             checkGameStatus(days + 1);
             setDays((days) => days + 1);
-            //dispatch(setDays(1));
         }, 5000);
     }
 
@@ -218,14 +224,14 @@ const Game = () => {
             });
 
             setOrderId(orderId + 1);
-            removeProduct(selectedGood);
+            removeProduct(selectedGood, playerStorages);
             setTransportOrders(newOrders);
             setSelectedGood(0);
         }
     }   
 
-    function removeProduct(productId) {
-        const storagesNew = playerStorages;
+    function removeProduct(productId, storages) {
+        const storagesNew = storages;
 
         const index = storagesNew.findIndex((storage) => {
             return storage.cityId === currentCity;
@@ -255,16 +261,12 @@ const Game = () => {
             });
 
             if (index > -1) {
-                const goodIndex = storagesNew[index].storage.findIndex(
-                    (good) => {
+                const goodIndex = storagesNew[index].storage.findIndex((good) => {
                         return good.id === goodId;
-                    }
-                );
+                    });
 
                 if (goodIndex > -1) {
-                    const newQty =
-                        parseInt(storagesNew[index].storage[goodIndex].qty) +
-                        parseInt(qty);
+                    const newQty = parseInt(storagesNew[index].storage[goodIndex].qty) + parseInt(qty);
                     storagesNew[index].storage[goodIndex].qty = newQty;
                 } else {
                     storagesNew[index].storage.push({
@@ -278,6 +280,260 @@ const Game = () => {
             setMoney(money - totalPrice);
         }
     } 
+
+    function getQty(id, storages) {
+        const index = storages.findIndex((storage) => {
+            return storage.cityId === currentCity;
+        });
+
+        if (index > -1) {
+            const goodIndex = storages[index].storage.findIndex((good) => {
+                return good.id === id;
+            });
+
+            if (goodIndex > -1) {
+                const qty = parseInt(storages[index].storage[goodIndex].qty);
+                return qty;
+            }
+        }
+    }
+
+    function moveGoods(goodId) {
+        if (selectedGood === goodId) {
+            const newResearchStorages = researchStorages;
+            const qty = getQty(selectedGood, playerStorages);
+
+            const index = newResearchStorages.findIndex((storage) => {
+                return storage.cityId === currentCity;
+            });
+
+            if (index > -1) {
+                const goodIndex = newResearchStorages[index].storage.findIndex((good) => {
+                    return good.id === goodId;
+                });
+                
+                if (goodIndex > -1) {
+                    const newQty = parseInt(newResearchStorages[index].storage[goodIndex].qty) + parseInt(qty);
+                    newResearchStorages[index].storage[goodIndex].qty = newQty;
+                    removeProduct(selectedGood, playerStorages);
+                    setResearchStorages(newResearchStorages);
+                    setSelectedGood(0);
+                }
+            }
+
+        } else {
+            if (selectedGood && !goodId) {
+                const newResearchStorages = researchStorages;
+                const qty = getQty(selectedGood, playerStorages);
+                
+                const index = newResearchStorages.findIndex((storage) => {
+                    return storage.cityId === currentCity;
+                });
+
+                if (index > -1) {
+                    const goodIndex = newResearchStorages[index].storage.findIndex((good) => {
+                        return good.id === selectedGood;
+                    });
+
+                    if (goodIndex < 0) {
+                        newResearchStorages[index].storage.push({
+                            id: selectedGood,
+                            qty: qty,
+                        })
+                        removeProduct(selectedGood, playerStorages);    
+                        setResearchStorages(newResearchStorages);
+                        setSelectedGood(0);
+                    }
+                }
+            }
+        }
+    }
+
+    function moveGoodsBack(goodId) {
+        if (selectedResGood === goodId) {
+            const storagesNew = playerStorages;
+            const qty = getQty(selectedResGood, researchStorages);
+
+            const index = storagesNew.findIndex((storage) => {
+                return storage.cityId === currentCity;
+            });
+
+            if (index > -1) {
+                const goodIndex = storagesNew[index].storage.findIndex((good) => {
+                    return good.id === goodId;
+                });
+
+                if (goodIndex > -1) {
+                    const newQty = parseInt(storagesNew[index].storage[goodIndex].qty) + parseInt(qty);
+                    storagesNew[index].storage[goodIndex].qty = newQty;
+                    removeProduct(selectedResGood, researchStorages);
+                    setPlayerStorages(storagesNew);
+                    setSelectedResGood(0);
+                }
+            }
+        } else {
+            if (selectedResGood && !goodId) {
+                const storagesNew = playerStorages;
+                const qty = getQty(selectedResGood, researchStorages);
+
+                const index = storagesNew.findIndex((storage) => {
+                    return storage.cityId === currentCity;
+                });
+
+                if (index > -1) {
+                    const goodIndex = storagesNew[index].storage.findIndex((good) => {
+                        return good.id === selectedResGood;
+                    });
+
+                    if (goodIndex < 0) {
+                        storagesNew[index].storage.push({
+                            id: selectedResGood,
+                            qty: qty,
+                        })
+                        removeProduct(selectedResGood, researchStorages);
+                        setPlayerStorages(storagesNew);
+                        setSelectedResGood(0);
+                    }
+                }
+            }
+        }
+    }
+
+    function moveToMix(goodId) {
+        if (selectedGood === goodId) {
+            const newMixStorages = mixStorages;
+            const qty = getQty(selectedGood, playerStorages);
+
+            const index = newMixStorages.findIndex((storage) => {
+                return storage.cityId === currentCity;
+            });
+
+            if (index > -1) {
+                const goodIndex = newMixStorages[index].storage.findIndex((good) => {
+                    return good.id === goodId;
+                });
+                
+                if (goodIndex > -1) {
+                    const newQty = parseInt(newMixStorages[index].storage[goodIndex].qty) + parseInt(qty);
+                    newMixStorages[index].storage[goodIndex].qty = newQty;
+                    removeProduct(selectedGood, playerStorages);
+                    setMixStorages(newMixStorages);
+                    setSelectedGood(0);
+                }
+            }
+
+        } else {
+            if (selectedGood && !goodId) {
+                const newMixStorages = mixStorages;
+                const qty = getQty(selectedGood, playerStorages);
+                
+                const index = newMixStorages.findIndex((storage) => {
+                    return storage.cityId === currentCity;
+                });
+
+                if (index > -1) {
+                    const goodIndex = newMixStorages[index].storage.findIndex((good) => {
+                        return good.id === selectedGood;
+                    });
+
+                    if (goodIndex < 0) {
+                        newMixStorages[index].storage.push({
+                            id: selectedGood,
+                            qty: qty,
+                        })
+                        removeProduct(selectedGood, playerStorages);    
+                        setMixStorages(newMixStorages);
+                        setSelectedGood(0);
+                    }
+                }
+            }
+        }
+    }
+
+    function moveMixBack(goodId) {
+        if (selectedMixGood === goodId) {
+            const storagesNew = playerStorages;
+            const qty = getQty(selectedMixGood, mixStorages);
+
+            const index = storagesNew.findIndex((storage) => {
+                return storage.cityId === currentCity;
+            });
+
+            if (index > -1) {
+                const goodIndex = storagesNew[index].storage.findIndex((good) => {
+                    return good.id === goodId;
+                });
+
+                if (goodIndex > -1) {
+                    const newQty = parseInt(storagesNew[index].storage[goodIndex].qty) + parseInt(qty);
+                    storagesNew[index].storage[goodIndex].qty = newQty;
+                    removeProduct(selectedMixGood, mixStorages);
+                    setPlayerStorages(storagesNew);
+                    setSelectedMixGood(0);
+                }
+            }
+        } else {
+            if (selectedMixGood && !goodId) {
+                const storagesNew = playerStorages;
+                const qty = getQty(selectedMixGood, mixStorages);
+
+                const index = storagesNew.findIndex((storage) => {
+                    return storage.cityId === currentCity;
+                });
+
+                if (index > -1) {
+                    const goodIndex = storagesNew[index].storage.findIndex((good) => {
+                        return good.id === selectedResGood;
+                    });
+
+                    if (goodIndex < 0) {
+                        storagesNew[index].storage.push({
+                            id: selectedMixGood,
+                            qty: qty,
+                        })
+                        removeProduct(selectedMixGood, mixStorages);
+                        setPlayerStorages(storagesNew);
+                        setSelectedMixGood(0);    
+                    }
+                }
+            }
+        }
+    }
+
+    function getMixingResult() {  // давать такое количество нового компонента в зависимости от количества старого?
+        const mixStore = getCurrentStorage(mixStorages);
+        console.log(mixStore[1]);
+
+        if (mixStore[0].id === 1 && mixStore[1].id === 2)  {
+            const storagesNew = playerStorages;
+            const addGood = goods.find((obj) => {
+                return obj.id === 3;
+            })
+
+            const index = storagesNew.findIndex((storage) => {
+                return storage.cityId === currentCity;
+            });
+
+            if (index > -1) {
+                const goodIndex = storagesNew[index].storage.findIndex((good) => {
+                        return good.id === 3;
+                    });
+
+                if (goodIndex > -1) {
+                    const newQty = parseInt(storagesNew[index].storage[goodIndex].qty) + parseInt(20);a
+                    storagesNew[index].storage[goodIndex].qty = newQty;
+                } else {
+                    storagesNew[index].storage.push({
+                        id: addGood.id,
+                        qty: 20,
+                    });
+                }
+            }
+            removeProduct(mixStore[0].id, mixStorages);
+            removeProduct(mixStore[1].id, mixStorages);
+            setPlayerStorages(storagesNew); 
+        }
+    }
 
     function acceptOrder(order) {
         setTransportOrders(orders => {
@@ -355,7 +611,7 @@ const Game = () => {
     }
 
     return (
-        <div className="game">
+        <div className="game" onClick={() => {setSelectedResGood(""); setSelectedMixGood("");}}>
             {/* <Button onClick={logout}>Закончить игру</Button> */}
             <h1 className="game-name">Magnum opus</h1>
 
@@ -399,6 +655,10 @@ const Game = () => {
                             onSelectGood={(goodId) => setSelectedGood(goodId)}
                             onSell={(id, qty, price) => sellGoods(id, qty, price)}
                             onTransport={(targetCityId) => createTransportOrder(targetCityId)}
+                            onMove={(goodId) => moveGoodsBack(goodId)}
+                            onSelectResGood={(goodId) => setSelectedResGood(goodId)}
+                            onMoveFromMix={(goodId) => moveMixBack(goodId)}
+                            onSelectMixGood={(goodId) => setSelectedMixGood(goodId)}
                         />
                     </div>
                     <div className="transporations">
@@ -414,7 +674,17 @@ const Game = () => {
                 
                 <div className="column">
                     <div className="mixing">
-                        <Mixing data={researchStorage} />
+                        <Mixing
+                            research={getCurrentStorage(researchStorages)}
+                            selectedResGood={selectedResGood}
+                            onSelectResGood={(goodId) => setSelectedResGood(goodId)}
+                            onMove={(goodId) => moveGoods(goodId)}
+                            mix={getCurrentStorage(mixStorages)}
+                            selectedMixGood={selectedMixGood}
+                            onSelectMixGood={(goodId) => setSelectedMixGood(goodId)}
+                            onMoveToMix={(goodId) => moveToMix(goodId)}
+                            mixResult={() => getMixingResult()}
+                        />
                     </div>
                 </div>
             </div>
