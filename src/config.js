@@ -257,14 +257,7 @@ export const defaultResearchData = [
 export const defaultMixData = [
     {
         cityId: 1,
-        storage: [{
-            id: 1,
-            qty: 20,
-        },
-        {
-            id: 2,
-            qty: 20,
-        },]
+        storage: []
     },
     {
         cityId: 2,

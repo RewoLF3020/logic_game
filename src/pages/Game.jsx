@@ -502,9 +502,10 @@ const Game = () => {
 
     function getMixingResult() {  // давать такое количество нового компонента в зависимости от количества старого?
         const mixStore = getCurrentStorage(mixStorages);
-        console.log(mixStore[1]);
 
-        if (mixStore[0].id === 1 && mixStore[1].id === 2)  {
+        if (!mixStore[0] || !mixStore[1]) return;
+
+        if (mixStore[0].id === 1 && mixStore[1].id === 2 || mixStore[0].id === 2 && mixStore[1].id === 1)  {
             const storagesNew = playerStorages;
             const addGood = goods.find((obj) => {
                 return obj.id === 3;
@@ -520,18 +521,24 @@ const Game = () => {
                     });
 
                 if (goodIndex > -1) {
-                    const newQty = parseInt(storagesNew[index].storage[goodIndex].qty) + parseInt(20);a
+                    const newQty = parseInt(storagesNew[index].storage[goodIndex].qty) + parseInt(20);
                     storagesNew[index].storage[goodIndex].qty = newQty;
+                    const newMixStorages = [...mixStorages];
+                    newMixStorages[index].storage.splice(0, 2);
+                    setMixStorages(newMixStorages);
+                    setPlayerStorages(storagesNew); 
+        
                 } else {
                     storagesNew[index].storage.push({
                         id: addGood.id,
                         qty: 20,
                     });
+                    const newMixStorages = [...mixStorages];
+                    newMixStorages[index].storage.splice(0, 2);
+                    setMixStorages(newMixStorages);
+                    setPlayerStorages(storagesNew);         
                 }
             }
-            removeProduct(mixStore[0].id, mixStorages);
-            removeProduct(mixStore[1].id, mixStorages);
-            setPlayerStorages(storagesNew); 
         }
     }
 
@@ -612,8 +619,8 @@ const Game = () => {
 
     return (
         <div className="game" onClick={() => {setSelectedResGood(""); setSelectedMixGood("");}}>
-            {/* <Button onClick={logout}>Закончить игру</Button> */}
             <h1 className="game-name">Magnum opus</h1>
+            <button className="btn" onClick={logout}>Закончить игру</button>
 
             {gameStatus === gameStatuses.win ? (
                 <h2 className="game-status win">Вы справились!</h2>

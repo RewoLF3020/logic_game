@@ -1,8 +1,12 @@
 @import "./../vars.scss";
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative&display=swap');
 
 .login {
 	margin-top: 200px;
 	text-align: center;
+	font-family: 'Cinzel Decorative', cursive;
+	font-size: 40px;
+	color: #ffed00;
 }
 
 .game {
@@ -12,11 +16,28 @@
 	//height: auto;
 	background: $color1;
 
+	::-webkit-scrollbar {
+		width: 3px;
+	  }
+	  
+	  ::-webkit-scrollbar-track {
+		-webkit-box-shadow: 5px 5px 5px -5px $color3 inset;
+		background-color: $color4;
+		border-radius: 10px;
+	  }
+	  
+	  ::-webkit-scrollbar-thumb {
+		border-radius: 10px;
+		background: $color3;
+	  }
+
 	.game-name {
 		text-align: center;
-		padding: 15px 0 20px;
+		padding: 15px 0 0px;
 		margin: 0;
-		font-size: 24px;
+		font-size: 30px;
+		font-family: 'Cinzel Decorative', cursive;
+		color: $color5;
 	}
 
 	.game-status {
@@ -63,5 +84,16 @@
 		border: 1px solid $color2;
 		border-top: 0;
 		margin-bottom: 10px;
+	}
+
+	.btn {
+		padding: 5px 15px;
+		color: teal;
+		font-size: 30px;
+		font-family: 'Cinzel Decorative', cursive;
+		background: transparent;
+		border: none;
+		//border: 1px solid teal;
+		cursor: pointer;	
 	}
 }
