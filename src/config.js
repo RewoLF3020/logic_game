@@ -254,6 +254,33 @@ export const defaultResearchData = [
 ]
 
 
+export const defaultMixData = [
+    {
+        cityId: 1,
+        storage: [{
+            id: 1,
+            qty: 20,
+        },
+        {
+            id: 2,
+            qty: 20,
+        },]
+    },
+    {
+        cityId: 2,
+        storage: []
+    },
+    {
+        cityId: 3,
+        storage: [],
+    },
+    {
+        cityId: 4,
+        storage: [],
+    }
+]
+
+
 export const defaultDeposits = [
     {
         id: 1,

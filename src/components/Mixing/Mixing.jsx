@@ -70,11 +70,67 @@ const Mixing = (props) => {
             <div className="mix">
                 <h2 className="title">Смешивание</h2>
                 <div className="panel">
-                    <div className="mixing-goods mix">
-                        <li className="mix-item"></li>
-                        <button className="button">СМЕШАТЬ</button>
-                        <li className="mix-item"></li>
-                    </div>
+                    <ul className="mixing-goods mix">
+                        {Array(2).fill().map((i, index) => {
+                            if (props.mix[index]) {
+                                const item = props.mix[index];
+
+                                if (index === 0) {
+                                    return (
+                                        <div>
+                                            <li
+                                                key={"mix-" + item.id}
+                                                className={"mix-item item-" + item.id + (props.selectedMixGood === item.id ? " selected" : "")}
+                                                onClick={(e) => {
+                                                    props.onSelectMixGood(item.id);
+                                                    e.stopPropagation();
+                                                    props.onMoveToMix(item.id);
+                                                }}
+                                            >
+                                                <span className="good-description"> {item.qty} шт.</span>
+                                            </li>
+                                            <button className="button" onClick={() => props.mixResult()}>
+                                                СМЕШАТЬ
+                                            </button>
+                                        </div>
+                                    );
+                                }
+                                return (
+                                    <li
+                                        key={"mix-" + item.id}
+                                        className={"mix-item item-" + item.id + (props.selectedMixGood === item.id ? " selected" : "")}
+                                        onClick={(e) => {
+                                            props.onSelectMixGood(item.id);
+                                            e.stopPropagation();
+                                            props.onMoveToMix(item.id);
+                                        }}
+                                    >
+                                        <span className="good-description"> {item.qty} шт.</span>
+                                    </li>
+                                );
+                            } else {
+                                if (index === 0) {
+                                    return (
+                                        <div>
+                                            <li
+                                                className="mix-item no-item"
+                                                key={"empty-" + index}
+                                                onClick={() => {props.onMoveToMix()}}
+                                            ></li> 
+                                            <button className="button">СМЕШАТЬ</button>
+                                        </div>
+                                    );
+                                }
+                                return (
+                                    <li
+                                        className="mix-item no-item"
+                                        key={"empty-" + index}
+                                        onClick={() => {props.onMoveToMix()}}
+                                    ></li> 
+                                );
+                            }
+                        })}
+                    </ul>
                 </div>
             </div>
             
@@ -82,16 +138,16 @@ const Mixing = (props) => {
             <div className="panel">
                 <ul className="mixing-goods potions">
                     {Array(4).fill().map((i, index) => {
-                        if (props.data[index]) {
-                            const item = props.data[index];
+                        if (props.research[index]) {
+                            const item = props.research[index];
 
                             if (index === 3) {
                                 return (
                                     <li 
                                         key={"mix-item" + item.id}
-                                        className={"mix-item item-" + item.id + (props.selectedMixGood === item.id ? " selected" : "")}
+                                        className={"mix-item item-" + item.id + (props.selectedResGood === item.id ? " selected" : "")}
                                         onClick={(e) => {
-                                            props.onSelectMixGood(item.id); 
+                                            props.onSelectResGood(item.id); 
                                             e.stopPropagation();
                                             props.onMove(item.id);
                                         }}
@@ -105,9 +161,9 @@ const Mixing = (props) => {
                                 <div>
                                     <li 
                                         key={"mix-item" + item.id}
-                                        className={"mix-item item-" + item.id + (props.selectedMixGood === item.id ? " selected" : "")}
+                                        className={"mix-item item-" + item.id + (props.selectedResGood === item.id ? " selected" : "")}
                                         onClick={(e) => {
-                                            props.onSelectMixGood(item.id); 
+                                            props.onSelectResGood(item.id); 
                                             e.stopPropagation();
                                             props.onMove(item.id);
                                         }}

@@ -49,7 +49,10 @@ const Storage = (props) => {
                                             props.onSelectGood(item.id);
                                             setQty("");
                                             props.onMove(item.id);
+                                            props.onMoveFromMix(item.id);
                                             e.stopPropagation();
+                                            props.onSelectResGood("");
+                                            props.onSelectMixGood("");
                                         }}
                                     >
                                         <span className="good-description"> {item.qty} шт.</span>
@@ -60,7 +63,10 @@ const Storage = (props) => {
                                     <li
                                         className="good-item no-item"
                                         key={"empty-cell-" + index}
-                                        onClick={() => props.onMove()}
+                                        onClick={() => {
+                                            props.onMove();
+                                            props.onMoveFromMix();
+                                        }}
                                     ></li>
                                 );
                             }
