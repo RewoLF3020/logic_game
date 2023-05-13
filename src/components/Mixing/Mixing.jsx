@@ -4,6 +4,14 @@ import plus from "./../../img/icons8-сложение-30.png";
 import result from "./../../img/icons8-стрелка-50.png";
 
 const Mixing = (props) => {
+    function findGoodById(itemId) {
+        return props.goods.find((item) => {
+            return item.id === itemId;
+        }).title;
+    }
+
+    const resOfResearch = props.researchResult();
+
     return (
         <div>
             <div className="tips">
@@ -79,15 +87,18 @@ const Mixing = (props) => {
                                     return (
                                         <div>
                                             <li
-                                                key={"mix-" + item.id}
+                                                key={"mix-item-" + item.id}
                                                 className={"mix-item item-" + item.id + (props.selectedMixGood === item.id ? " selected" : "")}
                                                 onClick={(e) => {
                                                     props.onSelectMixGood(item.id);
                                                     e.stopPropagation();
                                                     props.onMoveToMix(item.id);
+                                                    props.onSelectGood("")
+                                                    props.onSelectResGood("");        
                                                 }}
                                             >
                                                 <span className="good-description"> {item.qty} шт.</span>
+                                                <span className="good-name">{findGoodById(item.id)}</span>
                                             </li>
                                             <button className="button" onClick={() => props.mixResult()}>
                                                 СМЕШАТЬ
@@ -97,15 +108,18 @@ const Mixing = (props) => {
                                 }
                                 return (
                                     <li
-                                        key={"mix-" + item.id}
+                                        key={"mix-item-" + item.id}
                                         className={"mix-item item-" + item.id + (props.selectedMixGood === item.id ? " selected" : "")}
                                         onClick={(e) => {
                                             props.onSelectMixGood(item.id);
                                             e.stopPropagation();
                                             props.onMoveToMix(item.id);
+                                            props.onSelectGood("")
+                                            props.onSelectResGood("");        
                                         }}
                                     >
                                         <span className="good-description"> {item.qty} шт.</span>
+                                        <span className="good-name">{findGoodById(item.id)}</span>
                                     </li>
                                 );
                             } else {
@@ -114,9 +128,9 @@ const Mixing = (props) => {
                                         <div>
                                             <li
                                                 className="mix-item no-item"
-                                                key={"empty-" + index}
+                                                key={"empty-place" + index}
                                                 onClick={() => {props.onMoveToMix()}}
-                                            ></li> 
+                                            ></li>
                                             <button className="button">СМЕШАТЬ</button>
                                         </div>
                                     );
@@ -124,7 +138,7 @@ const Mixing = (props) => {
                                 return (
                                     <li
                                         className="mix-item no-item"
-                                        key={"empty-" + index}
+                                        key={"empty-place" + index}
                                         onClick={() => {props.onMoveToMix()}}
                                     ></li> 
                                 );
@@ -150,9 +164,12 @@ const Mixing = (props) => {
                                             props.onSelectResGood(item.id); 
                                             e.stopPropagation();
                                             props.onMove(item.id);
+                                            props.onSelectGood("")
+                                            props.onSelectMixGood("");
                                         }}
                                     >
                                         <span className="good-description"> {item.qty} шт.</span>
+                                        <span className="good-name">{findGoodById(item.id)}</span>
                                     </li>
                                 );
                             }
@@ -166,9 +183,12 @@ const Mixing = (props) => {
                                             props.onSelectResGood(item.id); 
                                             e.stopPropagation();
                                             props.onMove(item.id);
+                                            props.onSelectGood("")
+                                            props.onSelectMixGood("");
                                         }}
                                     >
                                         <span className="good-description"> {item.qty} шт.</span>
+                                        <span className="good-name">{findGoodById(item.id)}</span>
                                     </li>
                                     <img src={plus} alt="plus"/>
                                 </div>
@@ -197,9 +217,22 @@ const Mixing = (props) => {
                         }
                     })}
 
-                    {/* логика получения результата варки */}
-                    <img src={result} alt="result"/>
-                    <li className="mix-item item-11"></li>
+                    <img className="result" src={result} alt="result" onClick={() => props.moveResearchRes()} />
+                    {resOfResearch ? (
+                        <li 
+                            key={result}
+                            className={"mix-item item-" + resOfResearch}
+                        >
+                            <span className="good-description"> 20 шт.</span>
+                            <span className="good-name">{findGoodById(resOfResearch)}</span>
+                        </li>
+                    )
+                    : (
+                        <li 
+                            key={"no-result"}
+                            className="mix-item no-item"
+                        ></li>
+                    )}
                 </ul>
             </div>
         </div>

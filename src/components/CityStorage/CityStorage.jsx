@@ -100,7 +100,7 @@ const CityStorage = (props) => {
                                 <div className="good-item-stats">
                                     <Line options={options} data={getGoodData(good.priceStats)}/>
                                 </div>
-								<StorageItem good={good} onBuy={props.onBuy} money={props.money}/>
+								<StorageItem goods={props.goods} good={good} onBuy={props.onBuy} money={props.money}/>
 
                             </div>
                         );

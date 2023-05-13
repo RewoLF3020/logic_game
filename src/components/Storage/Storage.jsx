@@ -56,6 +56,7 @@ const Storage = (props) => {
                                         }}
                                     >
                                         <span className="good-description"> {item.qty} шт.</span>
+                                        <span className="good-name">{findGoodById(item.id)}</span>
                                     </li>
                                 );
                             } else {

@@ -20,6 +20,40 @@
             background-repeat: no-repeat;
             cursor: pointer;
 
+            .good-name {
+                visibility: hidden;
+                width: 100px;
+                font-size: 12px;
+                background-color: $color4;
+                color: #fff;
+                text-align: center;
+                border-radius: 6px;
+                padding: 5px 0;
+                //position: absolute;
+                z-index: 1;
+                bottom: 125%;
+                left: 50%;
+                margin-left: -55px;
+                opacity: 0;
+                transition: opacity 0.3s;
+    
+                &::after {
+                    content: "";
+                    position: absolute;
+                    top: 100%;
+                    left: 50%;
+                    margin-left: -5px;
+                    border-width: 5px;
+                    border-style: solid;
+                    border-color: $color4 transparent transparent transparent;
+                }
+            }
+    
+            &:hover .good-name {
+                visibility: visible;
+                opacity: 1;
+            }
+
             &.item-1 {
                 background-position: 0 0;
             }
