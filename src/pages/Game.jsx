@@ -16,17 +16,27 @@ import {
     settings,
     gameStatuses,
     defaultResearchData,
-    defaultMixData
+    defaultMixData,
+    hints
 } from "../config";
+import { BsInfoCircle } from "react-icons/bs";
+import TextModal from "../components/UI/modal/TextModal";
+import WinModal from "../components/UI/modal/WinModal";
 
 
 const Game = () => {
-    const { /* isAuth, */ setIsAuth } = useContext(AuthContext);
+    const { setIsAuth } = useContext(AuthContext);
 
     const logout = () => {
-        setIsAuth(false);
-        localStorage.removeItem("auth");
+        let flag = prompt("Вы действительно хотите покинуть игру? Результат не сохранится!", 'Да');
+        
+        if (flag === 'Да') {
+            setIsAuth(false);
+            localStorage.removeItem("auth");
+        }
     };
+
+    const [modalShow, setModalShow] = useState(false);
 
     const [currentCity, setCurrentCity] = useState(1);
 
@@ -53,6 +63,10 @@ const Game = () => {
     const [orderId, setOrderId] = useState(1);
 
     const [gameStatus, setGameStatus] = useState(gameStatuses.new);
+    const [winModal, setWinModal] = useState(false);
+
+    const [tip, setTip] = useState('');
+
 
     function getCurrentStorage(storages) {
         const store = storages.find((storage) => {
@@ -98,7 +112,7 @@ const Game = () => {
                             removeProduct(storagesNew[index].storage[goodIndex].id, playerStorages);
                         }
 
-                        setMoney(moneyNew);    
+                        setMoney(moneyNew);
                     }
                 }
             }
@@ -171,7 +185,7 @@ const Game = () => {
                     newDeposits.splice(index, 1);
                     
                     setMoney((oldMoney) => {
-                        return oldMoney + deposit.amount * 1.1;
+                        return oldMoney + parseInt(deposit.amount * 1.1);
                     })
                 }
             })
@@ -184,18 +198,21 @@ const Game = () => {
             updateCityStorages();
             updateTransportOrders();
             updateDeposits();
-            checkGameStatus(days + 1);
+            checkGameStatus();
             setDays((days) => days + 1);
-        }, 5000);
+        }, 10000);
     }
 
-    function checkGameStatus(days) {
-        if (days >= settings.goalDays && money < settings.goalMoney) {
-            setGameStatus(gameStatuses.fail);   
-        }
+    function checkGameStatus() {
+        const store = getCurrentStorage(playerStorages);
 
-        if (money >= settings.goalMoney ) {
+        const index = store.findIndex((item) => {
+            return item.id === 57;
+        })
+
+        if (index > -1) {
             setGameStatus(gameStatuses.win);
+            setWinModal(true);
         }
     }
 
@@ -500,14 +517,136 @@ const Game = () => {
         }
     }
 
-    function getMixingResult() {  // давать такое количество нового компонента в зависимости от количества старого?
+    function getMixingResult() {
         const mixStore = getCurrentStorage(mixStorages);
-        console.log(mixStore[1]);
 
-        if (mixStore[0].id === 1 && mixStore[1].id === 2)  {
+        if (!mixStore[0] || !mixStore[1]) return;
+
+        let addId;
+
+        if (mixStore[0].id === 2 && mixStore[1].id === 3 || mixStore[0].id === 3 && mixStore[1].id === 2) addId = 4;
+        if (mixStore[0].id === 29 && mixStore[1].id === 10 || mixStore[0].id === 10 && mixStore[1].id === 29) addId = 5;
+        if (mixStore[0].id === 10 && mixStore[1].id === 20 || mixStore[0].id === 20 && mixStore[1].id === 10) addId = 6;
+        if (mixStore[0].id === 20 && mixStore[1].id === 21 || mixStore[0].id === 21 && mixStore[1].id === 20) addId = 7;
+        if (mixStore[0].id === 20 && mixStore[1].id === 22 || mixStore[0].id === 22 && mixStore[1].id === 20) addId = 8;
+        if (mixStore[0].id === 11 && mixStore[1].id === 31 || mixStore[0].id === 31 && mixStore[1].id === 11) addId = 9;
+        if (mixStore[0].id === 10 && mixStore[1].id === 47 || mixStore[0].id === 47 && mixStore[1].id === 10) addId = 11;
+        if (mixStore[0].id === 46 && mixStore[1].id === 20 || mixStore[0].id === 20 && mixStore[1].id === 46) addId = 12;
+        if (mixStore[0].id === 28 && mixStore[1].id === 18 || mixStore[0].id === 28 && mixStore[1].id === 18) addId = 13;
+        if (mixStore[0].id === 15 && mixStore[1].id === 31 || mixStore[0].id === 31 && mixStore[1].id === 15) addId = 14;
+        if (mixStore[0].id === 1 && mixStore[1].id === 25 || mixStore[0].id === 25 && mixStore[1].id === 1) addId = 15;
+        if (mixStore[0].id === 14 && mixStore[1].id === 25 || mixStore[0].id === 25 && mixStore[1].id === 14) addId = 16;
+        if (mixStore[0].id === 25 && mixStore[1].id === 26 || mixStore[0].id === 26 && mixStore[1].id === 25) addId = 17;
+        if (mixStore[0].id === 18 && mixStore[1].id === 23 || mixStore[0].id === 23 && mixStore[1].id === 18) addId = 19;
+        if (mixStore[0].id === 21 && mixStore[1].id === 22 || mixStore[0].id === 22 && mixStore[1].id === 21) addId = 20;
+        if (mixStore[0].id === 22 && mixStore[1].id === 23 || mixStore[0].id === 23 && mixStore[1].id === 22) addId = 21;
+        if (mixStore[0].id === 10 && mixStore[1].id === 23 || mixStore[0].id === 23 && mixStore[1].id === 10) addId = 22;
+        if (mixStore[0].id === 23 && mixStore[1].id === 10 || mixStore[0].id === 10 && mixStore[1].id === 22) addId = 24;
+        if (mixStore[0].id === 24 && mixStore[1].id === 23 || mixStore[0].id === 23 && mixStore[1].id === 24) addId = 25;
+        if (mixStore[0].id === 27 && mixStore[1].id === 24 || mixStore[0].id === 24 && mixStore[1].id === 27) addId = 26;
+        if (mixStore[0].id === 1 && mixStore[1].id === 20 || mixStore[0].id === 20 && mixStore[1].id === 1) addId = 27;
+        if (mixStore[0].id === 22 && mixStore[1].id === 27 || mixStore[0].id === 27 && mixStore[1].id === 22) addId = 28;
+        if (mixStore[0].id === 28 && mixStore[1].id === 27 || mixStore[0].id === 27 && mixStore[1].id === 28) addId = 29;
+        if (mixStore[0].id === 31 && mixStore[1].id === 22 || mixStore[0].id === 22 && mixStore[1].id === 31) addId = 30;
+        if (mixStore[0].id === 20 && mixStore[1].id === 32 || mixStore[0].id === 32 && mixStore[1].id === 20) addId = 31;
+        if (mixStore[0].id === 22 && mixStore[1].id === 19 || mixStore[0].id === 19 && mixStore[1].id === 22) addId = 32;
+        if (mixStore[0].id === 18 && mixStore[1].id === 27 || mixStore[0].id === 27 && mixStore[1].id === 18) addId = 33;
+        if (mixStore[0].id === 2 && mixStore[1].id === 22 || mixStore[0].id === 2 && mixStore[1].id === 22) addId = 34;
+        if (mixStore[0].id === 1 && mixStore[1].id === 37 || mixStore[0].id === 37 && mixStore[1].id === 1) addId = 35;
+        if (mixStore[0].id === 37 && mixStore[1].id === 44 || mixStore[0].id === 44 && mixStore[1].id === 37) addId = 36;
+        if (mixStore[0].id === 38 && mixStore[1].id === 36 || mixStore[0].id === 36 && mixStore[1].id === 38) addId = 37;
+        if (mixStore[0].id === 36 && mixStore[1].id === 37 || mixStore[0].id === 37 && mixStore[1].id === 36) addId = 38;
+        if (mixStore[0].id === 37 && mixStore[1].id === 32 || mixStore[0].id === 32 && mixStore[1].id === 37) addId = 39;
+        if (mixStore[0].id === 23 && mixStore[1].id === 21 || mixStore[0].id === 21 && mixStore[1].id === 23) addId = 40;
+        if (mixStore[0].id === 21 && mixStore[1].id === 7 || mixStore[0].id === 7 && mixStore[1].id === 21) addId = 41;
+        if (mixStore[0].id === 22 && mixStore[1].id === 25 || mixStore[0].id === 25 && mixStore[1].id === 22) addId = 42;
+        if (mixStore[0].id === 10 && mixStore[1].id === 37 || mixStore[0].id === 37 && mixStore[1].id === 10) addId = 43;
+        if (mixStore[0].id === 39 && mixStore[1].id === 10 || mixStore[0].id === 10 && mixStore[1].id === 39) addId = 44;
+        if (mixStore[0].id === 22 && mixStore[1].id === 24 || mixStore[0].id === 24 && mixStore[1].id === 22) addId = 45;
+        if (mixStore[0].id === 22 && mixStore[1].id === 40 || mixStore[0].id === 40 && mixStore[1].id === 22) addId = 46;
+        if (mixStore[0].id === 23 && mixStore[1].id === 28 || mixStore[0].id === 28 && mixStore[1].id === 23) addId = 47;
+        if (mixStore[0].id === 24 && mixStore[1].id === 28 || mixStore[0].id === 28 && mixStore[1].id === 24) addId = 48;
+        if (mixStore[0].id === 10 && mixStore[1].id === 24 || mixStore[0].id === 24 && mixStore[1].id === 10) addId = 49;
+        if (mixStore[0].id === 37 && mixStore[1].id === 38 || mixStore[0].id === 38 && mixStore[1].id === 37) addId = 50;
+        if (mixStore[0].id === 30 && mixStore[1].id === 36 || mixStore[0].id === 36 && mixStore[1].id === 30) addId = 51;
+        if (mixStore[0].id === 31 && mixStore[1].id === 50 || mixStore[0].id === 50 && mixStore[1].id === 31) addId = 52;
+        if (mixStore[0].id === 22 && mixStore[1].id === 45 || mixStore[0].id === 45 && mixStore[1].id === 22) addId = 53;
+
+        const storagesNew = playerStorages;
+        const addGood = goods.find((obj) => {
+            return obj.id === addId;
+        })
+
+        const index = storagesNew.findIndex((storage) => {
+            return storage.cityId === currentCity;
+        });
+
+            if (index > -1) {
+                const goodIndex = storagesNew[index].storage.findIndex((good) => {
+                        return good.id === 3;
+                    });
+
+                if (goodIndex > -1) {
+                    const newQty = parseInt(storagesNew[index].storage[goodIndex].qty) + parseInt(20);
+                    storagesNew[index].storage[goodIndex].qty = newQty;
+        
+                } else {
+                    storagesNew[index].storage.push({
+                        id: addGood.id,
+                        qty: 20,
+                    });         
+                }
+
+                const newMixStorages = [...mixStorages];
+                newMixStorages[index].storage.splice(0, 2);
+                setMixStorages(newMixStorages);
+                setPlayerStorages(storagesNew);
+            
+        }
+    }
+
+    function getResearchRes() {
+        const researchStore = getCurrentStorage(researchStorages);
+
+        for (let i = 0; i < 4; i++) {
+            if (!researchStore[i]) return;
+        }
+
+        const requiredNums1 = new Set([1, 10, 18, 23]);
+        const requiredNums2 = new Set([11, 15, 30, 45]);
+        const requiredNums3 = new Set([47, 29, 25, 20]);
+        const requiredNums4 = new Set([9, 5, 51, 52]);
+        const requiredNums5 = new Set([54, 55, 56, 57]);
+
+        const setArr = [
+            requiredNums1,
+            requiredNums2,
+            requiredNums3,
+            requiredNums4,
+            requiredNums5
+        ];
+
+        const idArr = researchStore.map(obj => obj.id);
+
+        for (let i = 0; i < 5; i++) {
+            const set = new Set(idArr);
+            const flag = (setArr[i].size === set.size && [...setArr[i]].every(num => set.has(num)));
+
+            if (flag && i === 0) return 54;
+            if (flag && i === 1) return 55;
+            if (flag && i === 2) return 56;
+            if (flag && i === 3) return 57;
+            if (flag && i === 4) return 58;
+        }
+    }
+
+    function moveResearchRes() {
+        const id = getResearchRes();
+
+        if (id) {
             const storagesNew = playerStorages;
             const addGood = goods.find((obj) => {
-                return obj.id === 3;
+                return obj.id === id;
             })
 
             const index = storagesNew.findIndex((storage) => {
@@ -516,22 +655,55 @@ const Game = () => {
 
             if (index > -1) {
                 const goodIndex = storagesNew[index].storage.findIndex((good) => {
-                        return good.id === 3;
-                    });
+                        return good.id === id;
+                });
 
                 if (goodIndex > -1) {
-                    const newQty = parseInt(storagesNew[index].storage[goodIndex].qty) + parseInt(20);a
+                    const newQty = parseInt(storagesNew[index].storage[goodIndex].qty) + parseInt(20);
                     storagesNew[index].storage[goodIndex].qty = newQty;
+        
                 } else {
                     storagesNew[index].storage.push({
                         id: addGood.id,
                         qty: 20,
                     });
                 }
+
+                const newResStorages = [...researchStorages];
+                newResStorages[index].storage.splice(0, 4);
+                setResearchStorages(newResStorages);
+                setPlayerStorages(storagesNew);
             }
-            removeProduct(mixStore[0].id, mixStorages);
-            removeProduct(mixStore[1].id, mixStorages);
-            setPlayerStorages(storagesNew); 
+        }
+    }
+
+    function getTip() {
+        if (money >= 100) {
+            const index = hints.findIndex((tips) => {
+                return tips.cityId === currentCity;
+            })
+
+            if (index > -1) {
+                if (hints[index].tips.length === 1) {
+                    const newtip = hints[index].tips[0];
+                    if (newtip === tip) return;
+                    else {
+                        setTip(newtip);
+                        setMoney(money - 100);     
+                    }
+                } else {
+                    let tipIndex = Math.floor(Math.random() * hints[index].tips.length);
+                    let newTip = hints[index].tips[tipIndex];
+
+                    while (newTip === tip) {
+                        tipIndex = Math.floor(Math.random() * hints[index].tips.length);
+                        newTip = hints[index].tips[tipIndex];
+                    }
+
+                    setTip(newTip);
+                    setMoney(money - 100);
+                }
+            }
         }
     }
 
@@ -602,7 +774,7 @@ const Game = () => {
                 });
 
                 setMoney((oldMoney) => {
-                    return oldMoney - amount;
+                    return parseInt(oldMoney - amount);
                 })
 
                 return newDeposits;
@@ -612,8 +784,21 @@ const Game = () => {
 
     return (
         <div className="game" onClick={() => {setSelectedResGood(""); setSelectedMixGood("");}}>
-            {/* <Button onClick={logout}>Закончить игру</Button> */}
+            <BsInfoCircle
+                size={30}
+                onClick={() => {setModalShow(true); console.log("fmefnm");}}
+                style={{float: "right", margin: 10, cursor: "pointer"}}
+            />
+            <TextModal
+                show={modalShow}
+                onHide={() => setModalShow(false)}
+            />
+            <WinModal
+                show={winModal}
+                onHide={() => setWinModal(false)} 
+            />
             <h1 className="game-name">Magnum opus</h1>
+            <button className="btn" onClick={logout}>Закончить игру</button>
 
             {gameStatus === gameStatuses.win ? (
                 <h2 className="game-status win">Вы справились!</h2>
@@ -641,6 +826,7 @@ const Game = () => {
                                 buyGoods(goodId, number, price)
                             }
                             money={money}
+                            goods={goods}
                         />
                     </div>
                 </div>
@@ -682,8 +868,15 @@ const Game = () => {
                             mix={getCurrentStorage(mixStorages)}
                             selectedMixGood={selectedMixGood}
                             onSelectMixGood={(goodId) => setSelectedMixGood(goodId)}
+                            onSelectGood={(goodId) => setSelectedGood(goodId)}
                             onMoveToMix={(goodId) => moveToMix(goodId)}
                             mixResult={() => getMixingResult()}
+                            goods={goods}
+                            researchResult={() => getResearchRes()}
+                            moveResearchRes={() => moveResearchRes()}
+                            getTip={() => getTip()}
+                            tip={tip}
+                            money={money}
                         />
                     </div>
                 </div>

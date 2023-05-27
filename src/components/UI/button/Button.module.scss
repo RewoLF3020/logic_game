@@ -1,8 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative&display=swap');
+
 .myBtn {
     padding: 5px 15px;
-    color: teal;
-    font-size: 14px;
+    color: #852eba;
+    font-size: 50px;
+	font-family: 'Cinzel Decorative', cursive;
     background: transparent;
-    border: 1px solid teal;
+    border: none;
+    //border: 1px solid teal;
     cursor: pointer;
 }

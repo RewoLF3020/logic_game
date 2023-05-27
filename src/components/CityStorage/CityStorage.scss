@@ -16,9 +16,43 @@
             border: 1px solid $color2;
             vertical-align: top;
 
-            background-image: url(../../icons.png);
+            background-image: url(../../icons.jpg);
             background-repeat: no-repeat;
             cursor: pointer;
+
+            .good-name {
+                visibility: hidden;
+                width: 100px;
+                font-size: 12px;
+                background-color: $color4;
+                color: #fff;
+                text-align: center;
+                border-radius: 6px;
+                padding: 5px 0;
+                //position: absolute;
+                z-index: 1;
+                bottom: 125%;
+                left: 50%;
+                margin-left: -55px;
+                opacity: 0;
+                transition: opacity 0.3s;
+    
+                &::after {
+                    content: "";
+                    position: absolute;
+                    top: 100%;
+                    left: 50%;
+                    margin-left: -5px;
+                    border-width: 5px;
+                    border-style: solid;
+                    border-color: $color4 transparent transparent transparent;
+                }
+            }
+    
+            &:hover .good-name {
+                visibility: visible;
+                opacity: 1;
+            }
 
             &.item-1 {
                 background-position: 0 0;
@@ -49,31 +83,207 @@
             }
     
             &.item-8 {
-                background-position: 0 -55px;
+                background-position: -385px 0;
             }
     
             &.item-9 {
-                background-position: -55px -55px;
+                background-position: -440px 0;
             }
     
             &.item-10 {
-                background-position: -110px -55px;
+                background-position: -495px 0;
             }
     
             &.item-11 {
-                background-position: -165px -55px;
+                background-position: -550px 0;
             }
     
             &.item-12 {
-                background-position: -220px -55px;
+                background-position: -605px 0;
             }
     
             &.item-13 {
-                background-position: -275px -55px;
+                background-position: -660px 0;
             }
     
             &.item-14 {
+                background-position: -715px 0;
+            }
+    
+            &.item-15 {
+                background-position: -770px 0;
+            }
+    
+            &.item-16 {
+                background-position: 0 -55px;
+            }
+    
+            &.item-17 {
+                background-position: -55px -55px;
+            }
+    
+            &.item-18 {
+                background-position: -110px -55px;
+            }
+    
+            &.item-19 {
+                background-position: -165px -55px;
+            }
+    
+            &.item-20 {
+                background-position: -220px -55px;
+            }
+    
+            &.item-21 {
+                background-position: -275px -55px;
+            }
+    
+            &.item-22 {
                 background-position: -330px -55px;
+            }
+    
+            &.item-23 {
+                background-position: -385px -55px;
+            }
+    
+            &.item-24 {
+                background-position: -440px -55px;
+            }
+    
+            &.item-25 {
+                background-position: -495px -55px;
+            }
+    
+            &.item-26 {
+                background-position: -550px -55px;
+            }
+    
+            &.item-27 {
+                background-position: -605px -55px;
+            }
+    
+            &.item-28 {
+                background-position: -660px -55px;
+            }
+    
+            &.item-29 {
+                background-position: -715px -55px;
+            }
+    
+            &.item-30 {
+                background-position: -770px -55px;
+            }
+    
+            &.item-31 {
+                background-position: 0 -110px;
+            }
+    
+            &.item-32 {
+                background-position: -55px -110px;
+            }
+    
+            &.item-33 {
+                background-position: -110px -110px;
+            }
+    
+            &.item-34 {
+                background-position: -165px -110px;
+            }
+    
+            &.item-35 {
+                background-position: -220px -110px;
+            }
+    
+            &.item-36 {
+                background-position: -275px -110px;
+            }
+    
+            &.item-37 {
+                background-position: -330px -110px;
+            }
+    
+            &.item-38 {
+                background-position: -385px -110px;
+            }
+    
+            &.item-39 {
+                background-position: -440px -110px;
+            }
+    
+            &.item-40 {
+                background-position: -495px -110px;
+            }
+    
+            &.item-41 {
+                background-position: -550px -110px;
+            }
+    
+            &.item-42 {
+                background-position: -605px -110px;
+            }
+    
+            &.item-43 {
+                background-position: -660px -110px;
+            }
+    
+            &.item-44 {
+                background-position: -715px -110px;
+            }
+    
+            &.item-45 {
+                background-position: -770px -110px;
+            }
+    
+            &.item-46 {
+                background-position: 0 -165px;
+            }
+    
+            &.item-47 {
+                background-position: -55px -165px;
+            }
+    
+            &.item-48 {
+                background-position: -110px -165px;
+            }
+    
+            &.item-49 {
+                background-position: -165px -165px;
+            }
+    
+            &.item-50 {
+                background-position: -220px -165px;
+            }
+    
+            &.item-51 {
+                background-position: -275px -165px;
+            }
+    
+            &.item-52 {
+                background-position: -330px -165px;
+            }
+
+            &.item-53 {
+                background-position: -385px -165px;
+            }
+
+            &.item-54 {
+                background-position: -440px -165px;
+            }
+    
+            &.item-55 {
+                background-position: -495px -165px;
+            }
+    
+            &.item-56 {
+                background-position: -550px -165px;
+            }
+    
+            &.item-57 {
+                background-position: -605px -165px;
+            }
+
+            &.item-58 {
+                background-position: -660px -165px;
             }
         }
 

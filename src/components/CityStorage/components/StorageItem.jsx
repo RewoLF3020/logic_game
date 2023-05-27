@@ -3,9 +3,17 @@ import React, { useState } from "react";
 const StorageItem = (props) => {
 	let [number, setNumber] = useState('');
 
+    function findGoodById(itemId) {
+        return props.goods.find((item) => {
+            return item.id === itemId;
+        }).title;
+    }
+
     return (
         <div className="good-item-description">
-            <div className={"good-item item-" + props.good.id}></div>
+            <div className={"good-item item-" + props.good.id}>
+                <span className="good-name">{findGoodById(props.good.id)}</span>
+            </div>
             <input
                 className="input-number"
                 name={"count" + new Date()}
