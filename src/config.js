@@ -362,7 +362,7 @@ export const goods = [
     },
     {
         id: 4,
-        title: "Инь Янь(Р)",
+        title: "Инь Ян(Р)",
     },
     {
         id: 5,
