@@ -17,7 +17,6 @@ export default function WinModal(props) {
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body style={{ background: "#251002" }}>
-                <h4></h4>
                 <p>
                     Подобным образом философы хотели бы, чтобы четырехугольник
                     превратился в треугольник, то есть в тело, Дух и Душу,
