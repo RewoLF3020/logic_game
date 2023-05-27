@@ -236,7 +236,7 @@ const Game = () => {
                 targetCityId,
                 goodId: selectedGood,
                 qty: storage[goodIndex].qty,
-                days: 10
+                days: 6
             });
 
             setOrderId(orderId + 1);
@@ -582,7 +582,7 @@ const Game = () => {
 
             if (index > -1) {
                 const goodIndex = storagesNew[index].storage.findIndex((good) => {
-                        return good.id === 3;
+                        return good.id === addId;
                     });
 
                 if (goodIndex > -1) {
