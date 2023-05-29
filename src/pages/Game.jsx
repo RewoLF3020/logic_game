@@ -206,7 +206,7 @@ const Game = () => {
         const store = getCurrentStorage(playerStorages);
 
         const index = store.findIndex((item) => {
-            return item.id === 57;
+            return item.id === 58;
         })
 
         if (index > -1) {
