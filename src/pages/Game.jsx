@@ -631,8 +631,8 @@ const Game = () => {
             const set = new Set(idArr);
             const flag = (setArr[i].size === set.size && [...setArr[i]].every(num => set.has(num)));
 
-            if (flag && i === 0) return 54;
-            if (flag && i === 1) return 55;
+            if (flag && i === 0) return 54;  //let resId = 54;
+            if (flag && i === 1) return 55;  //if (flag) return resId++;
             if (flag && i === 2) return 56;
             if (flag && i === 3) return 57;
             if (flag && i === 4) return 58;
